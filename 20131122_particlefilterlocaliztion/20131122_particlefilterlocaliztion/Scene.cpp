@@ -134,7 +134,20 @@ void Scene::createTableCubes() {
 	}
 }
 
+/* ------------------------
+ * XYZtoIndexOfCube
+ * Return index of cube given an (x, y, z) coordinate.
+ * If out of range of scene, return -1.
+ * ------------------------ */
+
 int Scene::XYZtoIndexOfCube(double x, double y, double z) {
+	// Check out of range.
+	if (x > dRangeOfScene[0] || x < dRangeOfScene[1] ||
+		y > dRangeOfScene[2] || y < dRangeOfScene[3] ||
+		z > dRangeOfScene[4] || z < dRangeOfScene[5] )
+		return -1;
+
+	// Calculate index.
 	int xInd = (x - dRangeOfScene[1]) / lengthCubeEdge;
 	int yInd = (y - dRangeOfScene[3]) / lengthCubeEdge;
 	int zInd = (z - dRangeOfScene[5]) / lengthCubeEdge;
@@ -146,6 +159,25 @@ int Scene::XYZtoIndexOfCube(double x, double y, double z) {
  * distanceToNearestPointTouchingTheLine
  * Calcutate distance to the nearest point which 'touch' the line given.
  * 'Touch' means prependicular distance from the line lies within a range set previously.
+ *
+ * What the algorithm looks like in 2D space:
+ * 
+ *  ¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q
+ *  ¢x      ¢x      ¢x /    ¢x      ¢x      ¢x
+ *  ¢x      ¢x7     ¢x6     ¢x8     ¢x      ¢x
+ *  ¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q
+ *  ¢x      ¢x     /¢x      ¢x      ¢x      ¢x
+ *  ¢x    4 ¢x    3 ¢x    5 ¢x      ¢x      ¢x
+ *  ¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q
+ *  ¢x      ¢x £c/   ¢x      ¢x      ¢x      ¢x
+ *  ¢x 1    ¢x 0    ¢x 2    ¢x      ¢x      ¢x
+ *  ¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q
+ *
+ *  0: Starting point
+ *  0 to 9: Cubes where these points sit will be checked in order.
+ *  £c: If line angle is larger than 45 degrees, point 1 and 2 would rotate
+ *     to another locations 90 degrees from these,
+ *     i.e., be vertical rather than horizontal in this example.
  * 
  * Param xStart, yStart, zStart: Coords of point in interest.
  * Param xLine, yLine, zLine: Direction vector of the line.
@@ -153,12 +185,83 @@ int Scene::XYZtoIndexOfCube(double x, double y, double z) {
  * ------------------------ */
 double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart, double zStart, 
 													double xLine, double yLine, double zLine) {
-	// Table is initialized.
-	11;
-	// Pop to get current cube.
-	// Find shortest distance to the touching points of the cube.
-	// If distance found, break loop.
-	// Get successing cubes.
-	// Push into queue if not discovered or explored.
+	// Normalize line vector.
+	double lengthLine = sqrt(xLine*xLine + yLine*yLine + zLine*zLine);
+	xLine = xLine / lengthLine;
+	yLine = yLine / lengthLine;
+	zLine = zLine / lengthLine;
+
+	// Determine 2 vectors used in locating surrounding 8 points.
+	// 6 cases. In 2D a square is cut into 4 pieces by 45 degrees lines:
+	//  ¢z¢w¢w¢w¢w¢w¢w¢w¢{
+	//  ¢x\     /¢x
+	//  ¢x \   / ¢x
+	//  ¢x   X   ¢x
+	//  ¢x /   \ ¢x
+	//  ¢x/     \¢x (It is a square.)
+	//  ¢|¢w¢w¢w¢w¢w¢w¢w¢}
+	// And a 3D box is cut into 6 regions by 45 degrees planes. Thus 6 cases here.
+	double vector1ToSurroundPoint[3]; // x, y, z components.
+	double vector2ToSurroundPoint[3];
+	if      (xLine >= 0 && xLine    >= abs(yLine) && xLine    >= abs(zLine)) {
+		// Use  y and  z vector with length of lengthCubeEdge.
+		vector1ToSurroundPoint[0] = 0;
+		vector1ToSurroundPoint[1] = lengthCubeEdge;
+		vector1ToSurroundPoint[2] = 0;
+		vector2ToSurroundPoint[0] = 0;
+		vector2ToSurroundPoint[1] = 0;
+		vector2ToSurroundPoint[2] = lengthCubeEdge;
+	}
+	else if (xLine <  0 && xLine*-1 >= abs(yLine) && xLine*-1 >= abs(zLine)) {
+		// Use -y and  z vector with length of lengthCubeEdge.
+		vector1ToSurroundPoint[0] = 0;
+		vector1ToSurroundPoint[1] = -1 * lengthCubeEdge;
+		vector1ToSurroundPoint[2] = 0;
+		vector2ToSurroundPoint[0] = 0;
+		vector2ToSurroundPoint[1] = 0;
+		vector2ToSurroundPoint[2] = lengthCubeEdge;
+	}
+	else if (yLine >= 0 && yLine    >= abs(xLine) && yLine    >= abs(zLine)) {
+		// Use -x and  z vector with length of lengthCubeEdge.
+		vector1ToSurroundPoint[0] = -1 * lengthCubeEdge;
+		vector1ToSurroundPoint[1] = 0;
+		vector1ToSurroundPoint[2] = 0;
+		vector2ToSurroundPoint[0] = 0;
+		vector2ToSurroundPoint[1] = 0;
+		vector2ToSurroundPoint[2] = lengthCubeEdge;
+	}
+	else if (yLine <  0 && yLine*-1 >= abs(xLine) && yLine*-1 >= abs(zLine)) {
+		// Use  x and  z vector with length of lengthCubeEdge.
+		vector1ToSurroundPoint[0] = lengthCubeEdge;
+		vector1ToSurroundPoint[1] = 0;
+		vector1ToSurroundPoint[2] = 0;
+		vector2ToSurroundPoint[0] = 0;
+		vector2ToSurroundPoint[1] = 0;
+		vector2ToSurroundPoint[2] = lengthCubeEdge;
+	}
+	else if (xLine >= 0 && xLine    >= abs(xLine) && xLine    >= abs(yLine)) {
+		// Use  y and -x vector with length of lengthCubeEdge.
+		vector1ToSurroundPoint[0] = 0;
+		vector1ToSurroundPoint[1] = lengthCubeEdge;
+		vector1ToSurroundPoint[2] = 0;
+		vector2ToSurroundPoint[0] = -1 * lengthCubeEdge;
+		vector2ToSurroundPoint[1] = 0;
+		vector2ToSurroundPoint[2] = 0;
+	}
+	else if (xLine <  0 && xLine*-1 >= abs(xLine) && xLine*-1 >= abs(yLine)) {
+		// Use  y and  x vector with length of lengthCubeEdge.
+		vector1ToSurroundPoint[0] = 0;
+		vector1ToSurroundPoint[1] = lengthCubeEdge;
+		vector1ToSurroundPoint[2] = 0;
+		vector2ToSurroundPoint[0] = lengthCubeEdge;
+		vector2ToSurroundPoint[1] = 0;
+		vector2ToSurroundPoint[2] = 0;
+	}
+
+	// 
+}
+
+double Scene::distanceToNearestPointTouchingTheLineInACube(int indexCube,
+														   double xLine, double yLine, double zLine) {
 
 }

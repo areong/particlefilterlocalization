@@ -1,6 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
+#include <cmath>
 #include <iostream>
 #include "ReadPlyByRPly.h"
 
@@ -32,6 +33,8 @@ private:
 	int XYZtoIndexOfCube(double x, double y, double z);
 	double distanceToNearestPointTouchingTheLine(double xStart, double yStart, double zStart, 
 												 double xLine, double yLine, double zLine);
+	double distanceToNearestPointTouchingTheLineInACube(int indexCube,
+														double xLine, double yLine, double zLine);
 };
 
 #endif
