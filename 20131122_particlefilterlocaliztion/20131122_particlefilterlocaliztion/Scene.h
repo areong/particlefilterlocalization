@@ -1,7 +1,6 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-//#include "buildSceneFromPlyByRPly.h"
 #include <iostream>
 #include "ReadPlyByRPly.h"
 
@@ -10,7 +9,9 @@ public:
 	Scene(void);
 	~Scene(void);
 	int initialize(char *fileScene, double lengthCubeEdge);
+	void setDistancePointTouchesLine(double distance);
 	int printDPointsXYZ();
+	double *getRangeOfScene();
 	double **getTableCubes();
 
 private:
@@ -24,10 +25,13 @@ private:
 	int zNumCubes;
 	int xyNumCubes;
 	int *numPointsPerCube;
+	double distancePointTouchesLine;
 
 	void calcRangeOfScene();
 	void createTableCubes();
 	int XYZtoIndexOfCube(double x, double y, double z);
+	double distanceToNearestPointTouchingTheLine(double xStart, double yStart, double zStart, 
+												 double xLine, double yLine, double zLine);
 };
 
 #endif

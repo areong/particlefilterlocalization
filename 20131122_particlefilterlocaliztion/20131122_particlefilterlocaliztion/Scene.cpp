@@ -4,6 +4,7 @@ Scene::Scene(void) {
 	for (int i = 0; i < 6; i++) {
 		dRangeOfScene[i] = 0;
 	}
+	distancePointTouchesLine = 0.1;
 }
 
 Scene::~Scene(void) {
@@ -28,9 +29,15 @@ int Scene::initialize(char *fileScene, double lengthCubeEdge) {
 	return 0;
 }
 
+void Scene::setDistancePointTouchesLine(double distance) {
+	distancePointTouchesLine = distance;
+}
+
 int Scene::printDPointsXYZ() {
+	// If array is not created yet.
 	if (!dPointsXYZ) return 1;
 
+	// Print
 	for (int i = 0; i < numPoints * 3; i += 3) {
 		cout << dPointsXYZ[i] << '\t' << dPointsXYZ[i+1] << '\t' << dPointsXYZ[i+2] << endl;
 	}
@@ -38,13 +45,19 @@ int Scene::printDPointsXYZ() {
 	return 0;
 }
 
-double **Scene::getTableCubes() {
-	return tableCubes;
+double *Scene::getRangeOfScene() {
+	return dRangeOfScene;
+	// How to forbid changing the array when passed outside?
 }
 
-/*
+double **Scene::getTableCubes() {
+	return tableCubes;
+	// Again, how to forbid changing the array when passed outside?
+}
+
+/* -------------------------
  * Private
- */
+ * ------------------------- */
 
 void Scene::calcRangeOfScene() {
 	// Calculate real range.
@@ -127,4 +140,25 @@ int Scene::XYZtoIndexOfCube(double x, double y, double z) {
 	int zInd = (z - dRangeOfScene[5]) / lengthCubeEdge;
 	int index = zInd * xyNumCubes + yInd * xNumCubes + xInd;
 	return index;
+}
+
+/* ------------------------
+ * distanceToNearestPointTouchingTheLine
+ * Calcutate distance to the nearest point which 'touch' the line given.
+ * 'Touch' means prependicular distance from the line lies within a range set previously.
+ * 
+ * Param xStart, yStart, zStart: Coords of point in interest.
+ * Param xLine, yLine, zLine: Direction vector of the line.
+ * Return: Distance calculated.
+ * ------------------------ */
+double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart, double zStart, 
+													double xLine, double yLine, double zLine) {
+	// Table is initialized.
+	11;
+	// Pop to get current cube.
+	// Find shortest distance to the touching points of the cube.
+	// If distance found, break loop.
+	// Get successing cubes.
+	// Push into queue if not discovered or explored.
+
 }
