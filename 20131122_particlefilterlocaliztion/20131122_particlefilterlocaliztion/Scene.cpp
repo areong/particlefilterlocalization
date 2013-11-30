@@ -201,9 +201,10 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 	//  ¢x/     \¢x (It is a square.)
 	//  ¢|¢w¢w¢w¢w¢w¢w¢w¢}
 	// And a 3D box is cut into 6 regions by 45 degrees planes. Thus 6 cases here.
+	// Then set the length of line vector. There are 3 cases for 3 axes.
 	double vector1ToSurroundPoint[3]; // x, y, z components.
 	double vector2ToSurroundPoint[3];
-	if      (xLine >= 0 && xLine    >= abs(yLine) && xLine    >= abs(zLine)) {
+	if      (xLine >  0 && xLine    >= abs(yLine) && xLine    >= abs(zLine)) {
 		// Use  y and  z vector with length of lengthCubeEdge.
 		vector1ToSurroundPoint[0] = 0;
 		vector1ToSurroundPoint[1] = lengthCubeEdge;
@@ -211,6 +212,9 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 		vector2ToSurroundPoint[0] = 0;
 		vector2ToSurroundPoint[1] = 0;
 		vector2ToSurroundPoint[2] = lengthCubeEdge;
+
+		// Set new lengthLine.
+		lengthLine = lengthCubeEdge / xLine;
 	}
 	else if (xLine <  0 && xLine*-1 >= abs(yLine) && xLine*-1 >= abs(zLine)) {
 		// Use -y and  z vector with length of lengthCubeEdge.
@@ -220,8 +224,11 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 		vector2ToSurroundPoint[0] = 0;
 		vector2ToSurroundPoint[1] = 0;
 		vector2ToSurroundPoint[2] = lengthCubeEdge;
+
+		// Set new lengthLine.
+		lengthLine = lengthCubeEdge / xLine*-1;
 	}
-	else if (yLine >= 0 && yLine    >= abs(xLine) && yLine    >= abs(zLine)) {
+	else if (yLine >  0 && yLine    >= abs(xLine) && yLine    >= abs(zLine)) {
 		// Use -x and  z vector with length of lengthCubeEdge.
 		vector1ToSurroundPoint[0] = -1 * lengthCubeEdge;
 		vector1ToSurroundPoint[1] = 0;
@@ -229,6 +236,9 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 		vector2ToSurroundPoint[0] = 0;
 		vector2ToSurroundPoint[1] = 0;
 		vector2ToSurroundPoint[2] = lengthCubeEdge;
+
+		// Set new lengthLine.
+		lengthLine = lengthCubeEdge / yLine;
 	}
 	else if (yLine <  0 && yLine*-1 >= abs(xLine) && yLine*-1 >= abs(zLine)) {
 		// Use  x and  z vector with length of lengthCubeEdge.
@@ -238,8 +248,11 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 		vector2ToSurroundPoint[0] = 0;
 		vector2ToSurroundPoint[1] = 0;
 		vector2ToSurroundPoint[2] = lengthCubeEdge;
+
+		// Set new lengthLine.
+		lengthLine = lengthCubeEdge / yLine*-1;
 	}
-	else if (xLine >= 0 && xLine    >= abs(xLine) && xLine    >= abs(yLine)) {
+	else if (xLine >  0 && xLine    >= abs(xLine) && xLine    >= abs(yLine)) {
 		// Use  y and -x vector with length of lengthCubeEdge.
 		vector1ToSurroundPoint[0] = 0;
 		vector1ToSurroundPoint[1] = lengthCubeEdge;
@@ -247,6 +260,9 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 		vector2ToSurroundPoint[0] = -1 * lengthCubeEdge;
 		vector2ToSurroundPoint[1] = 0;
 		vector2ToSurroundPoint[2] = 0;
+
+		// Set new lengthLine.
+		lengthLine = lengthCubeEdge / zLine;
 	}
 	else if (xLine <  0 && xLine*-1 >= abs(xLine) && xLine*-1 >= abs(yLine)) {
 		// Use  y and  x vector with length of lengthCubeEdge.
@@ -256,11 +272,125 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 		vector2ToSurroundPoint[0] = lengthCubeEdge;
 		vector2ToSurroundPoint[1] = 0;
 		vector2ToSurroundPoint[2] = 0;
+
+		// Set new lengthLine.
+		lengthLine = lengthCubeEdge / zLine*-1;
 	}
 
-	// 
+	// Set line vector to new length.
+	xLine = xLine * lengthLine;
+	yLine = yLine * lengthLine;
+	zLine = zLine * lengthLine;
+
+	// Create an array to store the 9 points, including the starting point.
+	// Order:
+	//     ¡ô
+	//  4  3  2
+	//  5  0  1 ¡÷
+	//  6  7  8
+	//  0: The starting point.
+	//  ¡÷: vector1ToSurroundPoint
+	//  ¡ô: vector2ToSurroundPoint
+	double pointsOfNine[27];
+	// point 0
+	pointsOfNine[ 0] = xStart;
+	pointsOfNine[ 1] = yStart;
+	pointsOfNine[ 2] = zStart;
+	// point 1
+	pointsOfNine[ 3] = xStart + vector1ToSurroundPoint[0];
+	pointsOfNine[ 4] = yStart + vector1ToSurroundPoint[1];
+	pointsOfNine[ 5] = zStart + vector1ToSurroundPoint[2];
+	// point 2
+	pointsOfNine[ 6] = xStart + vector1ToSurroundPoint[0] + vector2ToSurroundPoint[0];
+	pointsOfNine[ 7] = yStart + vector1ToSurroundPoint[1] + vector2ToSurroundPoint[1];
+	pointsOfNine[ 8] = zStart + vector1ToSurroundPoint[2] + vector2ToSurroundPoint[2];
+	// point 3
+	pointsOfNine[ 9] = xStart                             + vector2ToSurroundPoint[0];
+	pointsOfNine[10] = yStart                             + vector2ToSurroundPoint[1];
+	pointsOfNine[12] = zStart                             + vector2ToSurroundPoint[2];
+	// point 4
+	pointsOfNine[12] = xStart - vector1ToSurroundPoint[0] + vector2ToSurroundPoint[0];
+	pointsOfNine[13] = yStart - vector1ToSurroundPoint[1] + vector2ToSurroundPoint[1];
+	pointsOfNine[14] = zStart - vector1ToSurroundPoint[2] + vector2ToSurroundPoint[2];
+	// point 5
+	pointsOfNine[15] = xStart - vector1ToSurroundPoint[0];
+	pointsOfNine[16] = yStart - vector1ToSurroundPoint[1];
+	pointsOfNine[17] = zStart - vector1ToSurroundPoint[2];
+	// point 6
+	pointsOfNine[18] = xStart - vector1ToSurroundPoint[0] - vector2ToSurroundPoint[0];
+	pointsOfNine[19] = yStart - vector1ToSurroundPoint[1] - vector2ToSurroundPoint[1];
+	pointsOfNine[20] = zStart - vector1ToSurroundPoint[2] - vector2ToSurroundPoint[2];
+	// point 7
+	pointsOfNine[21] = xStart                             - vector2ToSurroundPoint[0];
+	pointsOfNine[22] = yStart                             - vector2ToSurroundPoint[1];
+	pointsOfNine[23] = zStart                             - vector2ToSurroundPoint[2];
+	// point 8
+	pointsOfNine[24] = xStart + vector1ToSurroundPoint[0] - vector2ToSurroundPoint[0];
+	pointsOfNine[25] = yStart + vector1ToSurroundPoint[1] - vector2ToSurroundPoint[1];
+	pointsOfNine[26] = zStart + vector1ToSurroundPoint[2] - vector2ToSurroundPoint[2];
+
+	// Do line search along the line until out of range.
+	int numOfTimeWhileLoop = 0; // For output if no distance found.
+	double distanceShortest = -1;
+	int indicesNineCubes[9];
+	bool allCubesOutOfRange = false;
+	while (!allCubesOutOfRange) {
+		// Get the 9 cubes' indices
+		// and
+		// calculate touching line shortest distances to each cube if exist.
+		int countCubesOutOfRange = 0;
+		for (int i = 0; i < 9; i++) {
+			// Get index.
+			indicesNineCubes[i] = XYZtoIndexOfCube(pointsOfNine[i * 3],
+												   pointsOfNine[i * 3 + 1],
+												   pointsOfNine[i * 3 + 2]);
+			// Calculate distance.
+			if (indicesNineCubes[i] >= 0) {
+				double distance = distanceToNearestPointTouchingTheLineInACube(indicesNineCubes[i],
+																			   pointsOfNine[i * 3],
+																			   pointsOfNine[i * 3 + 1],
+																			   pointsOfNine[i * 3 + 2]);
+				// IF DISTANCE FOUND, BREAK THE LOOP.
+				if (distance >= 0) {
+					distanceShortest = distance;
+					break;
+				}
+			}
+			// Count out of range.
+			else
+				countCubesOutOfRange++;
+		}
+
+		// If all 'cubes' out of range, the break condition is satisfied.
+		if (countCubesOutOfRange == 9)
+			allCubesOutOfRange = true;
+
+		// Move the 9 points to new position.
+		else {
+			for (int i = 0; i < 9; i++) {
+				pointsOfNine[i * 3    ] += xLine;
+				pointsOfNine[i * 3 + 1] += yLine;
+				pointsOfNine[i * 3 + 2] += zLine;
+			}
+		}
+
+		// Increment numOfTimeWhileLoop.
+		numOfTimeWhileLoop++;
+	}
+
+	// If distance found, return it.
+	if (distanceShortest >= 0)
+		return distanceShortest;
+	// If not found, return the distance to the last center point.
+	else
+		return lengthLine * (numOfTimeWhileLoop - 1);
 }
 
+/* 
+ * distanceToNearestPointTouchingTheLineInACube
+ * Return distance.
+ * If no points touch the line, return -1;
+ * --------------------------------------------- */
 double Scene::distanceToNearestPointTouchingTheLineInACube(int indexCube,
 														   double xLine, double yLine, double zLine) {
 
