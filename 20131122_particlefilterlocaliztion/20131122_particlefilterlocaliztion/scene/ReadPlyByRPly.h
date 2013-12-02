@@ -2,7 +2,7 @@
 #define READPLYBYRPLY_H
 
 #include <iostream>
-#include "rply\rply.h"
+#include "../rply/rply.h"
 using namespace std;
 
 class ReadPlyByRPly {

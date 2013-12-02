@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <iostream>
-#include "Scene.h"
+#include "scene/Scene.h"
 
 int main() {
 	Scene sceneMain;
