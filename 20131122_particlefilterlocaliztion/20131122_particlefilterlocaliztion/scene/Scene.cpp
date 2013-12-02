@@ -336,7 +336,6 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 	pointsOfNine[26] = zStart + vector1ToSurroundPoint[2] - vector2ToSurroundPoint[2];
 
 	// Do line search along the line until out of range.
-	//TODO: At starting cube, ignore points in the opposite direction.
 	int numOfTimeWhileLoop = 0; // For output if no distance found.
 	double distanceShortest = -1;
 	int indicesNineCubes[9];
@@ -425,8 +424,9 @@ double Scene::distanceToNearestPointTouchingTheLineInACube(int indexCube,
 		zStartToPointi = tableCubes[indexCube][i * 3 + 2] - zStart;
 
 		// If point i is at the opposite direction, ignore it.
-		//ALTERNATIVE: Can be implemented at distanceToNearestPointTouchingTheLine
-		//             by other ways, which may increase speed (really?).
+		// ALTERNATIVE: Can be implemented at distanceToNearestPointTouchingTheLine
+		//				by other ways, such as check only at starting cube.
+		//				It may increase speed (really?).
 		cosTheta = xLine * xStartToPointi +
 				   yLine * yStartToPointi +
 				   zLine * zStartToPointi;	// Currently it is a innor product.
