@@ -295,8 +295,8 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 	//  5  0  1 >
 	//  6  7  8
 	//  0: The starting point.
-	//  ^: vector1ToSurroundPoint
-	//  >: vector2ToSurroundPoint
+	//  >: vector1ToSurroundPoint
+	//  ^: vector2ToSurroundPoint
 	double pointsOfNine[27];
 	// point 0
 	pointsOfNine[ 0] = xStart;
@@ -398,11 +398,11 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 		return lengthLine * (numOfTimeWhileLoop - 1);
 }
 
-/* 
+/* ---------------------------------------------
  * distanceToNearestPointTouchingTheLineInACube
  * Return distance.
- * If no points touch the line, return -1;
- * --------------------------------------------- */
+ * If no points touch the line, return -1.
+ * ---------------------------------------------  */
 double Scene::distanceToNearestPointTouchingTheLineInACube(int indexCube,
 														   double xStart, double yStart, double zStart,
 														   double xLine, double yLine, double zLine,
