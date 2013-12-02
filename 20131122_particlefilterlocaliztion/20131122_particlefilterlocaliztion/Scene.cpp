@@ -4,7 +4,7 @@ Scene::Scene(void) {
 	for (int i = 0; i < 6; i++) {
 		dRangeOfScene[i] = 0;
 	}
-	distancePointTouchesLine = 0.1;
+	distanceDefiningPointTouchesLine = 0.1;
 }
 
 Scene::~Scene(void) {
@@ -29,8 +29,14 @@ int Scene::initialize(char *fileScene, double lengthCubeEdge) {
 	return 0;
 }
 
-void Scene::setDistancePointTouchesLine(double distance) {
-	distancePointTouchesLine = distance;
+double Scene::takeAShot(double xPoint, double yPoint, double zPoint, 
+						double xFront, double yFront, double zFront,
+						double xTop,   double yTop,   double zTop) {
+	return distanceToNearestPointTouchingTheLine(xPoint, yPoint, zPoint, xFront, yFront, zFront);
+}
+
+void Scene::setDistanceDefiningPointTouchesLine(double distance) {
+	distanceDefiningPointTouchesLine = distance;
 }
 
 int Scene::printDPointsXYZ() {
@@ -75,20 +81,17 @@ void Scene::calcRangeOfScene() {
 
 	// Round the range.
 	for (int i = 0; i < 6; i += 2) {
-		cout << dRangeOfScene[i] << " ";
 		// Calculate rounded max.
 		if ((int)(dRangeOfScene[i] / lengthCubeEdge) >= 0)
 			dRangeOfScene[i] = ((int)(dRangeOfScene[i] / lengthCubeEdge) + 1) * lengthCubeEdge;
 		else
 			dRangeOfScene[i] = (int)(dRangeOfScene[i] / lengthCubeEdge) * lengthCubeEdge;
 
-		cout << dRangeOfScene[i+1] << endl;
 		// Calculate rounded min.
 		if ((int)(dRangeOfScene[i+1] / lengthCubeEdge) >= 0)
 			dRangeOfScene[i+1] = (int)(dRangeOfScene[i+1] / lengthCubeEdge) * lengthCubeEdge;
 		else
 			dRangeOfScene[i+1] = ((int)(dRangeOfScene[i+1] / lengthCubeEdge) - 1) * lengthCubeEdge;
-		cout <<  dRangeOfScene[i] << " " << dRangeOfScene[i+1] << endl;
 	}
 }
 
@@ -113,7 +116,6 @@ void Scene::createTableCubes() {
 
 	// Create entries of tableCubes.
 	for (int i = 0; i < numCubes; i++) {
-		cout << numPointsPerCube[i] << endl;
 		// No points in cube, ignore.
 		if (numPointsPerCube == 0) continue;
 		// There are points in cube, create entry.
@@ -169,13 +171,13 @@ int Scene::XYZtoIndexOfCube(double x, double y, double z) {
  *  |      |     /|      |      |      |
  *  |    4 |    3 |    5 |      |      |
  *  +------+------+------+------+------+
- *  |      | £c/   |      |      |      |
+ *  |      | a/   |      |      |      |
  *  | 1    | 0    | 2    |      |      |
  *  +------+------+------+------+------+
  *
  *  0: Starting point
  *  0 to 9: Cubes where these points sit will be checked in order.
- *  £c: If line angle is larger than 45 degrees, point 1 and 2 would rotate
+ *  a: If line angle is larger than 45 degrees, point 1 and 2 would rotate
  *     to another locations 90 degrees from these,
  *     i.e., be vertical rather than horizontal in this example.
  * 
@@ -185,6 +187,10 @@ int Scene::XYZtoIndexOfCube(double x, double y, double z) {
  * ------------------------ */
 double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart, double zStart, 
 													double xLine, double yLine, double zLine) {
+	// Check whether starting point is out of range.
+	if (XYZtoIndexOfCube(xStart, yStart, zStart) < 0)
+		return -1;
+
 	// Normalize line vector.
 	double lengthLine = sqrt(xLine*xLine + yLine*yLine + zLine*zLine);
 	xLine = xLine / lengthLine;
@@ -307,7 +313,7 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 	// point 3
 	pointsOfNine[ 9] = xStart                             + vector2ToSurroundPoint[0];
 	pointsOfNine[10] = yStart                             + vector2ToSurroundPoint[1];
-	pointsOfNine[12] = zStart                             + vector2ToSurroundPoint[2];
+	pointsOfNine[11] = zStart                             + vector2ToSurroundPoint[2];
 	// point 4
 	pointsOfNine[12] = xStart - vector1ToSurroundPoint[0] + vector2ToSurroundPoint[0];
 	pointsOfNine[13] = yStart - vector1ToSurroundPoint[1] + vector2ToSurroundPoint[1];
@@ -330,6 +336,7 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 	pointsOfNine[26] = zStart + vector1ToSurroundPoint[2] - vector2ToSurroundPoint[2];
 
 	// Do line search along the line until out of range.
+	//TODO: At starting cube, ignore points in the opposite direction.
 	int numOfTimeWhileLoop = 0; // For output if no distance found.
 	double distanceShortest = -1;
 	int indicesNineCubes[9];
@@ -344,12 +351,15 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 			indicesNineCubes[i] = XYZtoIndexOfCube(pointsOfNine[i * 3],
 												   pointsOfNine[i * 3 + 1],
 												   pointsOfNine[i * 3 + 2]);
+			cout << i << '\t' << pointsOfNine[i * 3    ] << '\t' <<
+								 pointsOfNine[i * 3 + 1] << '\t' <<
+								 pointsOfNine[i * 3 + 2] << endl;
 			// Calculate distance.
 			if (indicesNineCubes[i] >= 0) {
 				double distance = distanceToNearestPointTouchingTheLineInACube(indicesNineCubes[i],
-																			   pointsOfNine[i * 3],
-																			   pointsOfNine[i * 3 + 1],
-																			   pointsOfNine[i * 3 + 2]);
+																			   xStart, yStart, zStart,
+																			   xLine, yLine, zLine,
+																			   lengthLine);
 				// IF DISTANCE FOUND, BREAK THE LOOP.
 				if (distance >= 0) {
 					distanceShortest = distance;
@@ -392,6 +402,56 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
  * If no points touch the line, return -1;
  * --------------------------------------------- */
 double Scene::distanceToNearestPointTouchingTheLineInACube(int indexCube,
-														   double xLine, double yLine, double zLine) {
+														   double xStart, double yStart, double zStart,
+														   double xLine, double yLine, double zLine,
+														   double lengthLine) {
+	// Search every points in the cube.
+	// If a point's distance to the line is closer than the distanceDefiningPointTouchesLine,
+	// return the distance from thus stop searching.
+	double distanceToReturn = -1;
+	double distanceTemp;
+	double xStartToPointi;
+	double yStartToPointi;
+	double zStartToPointi;
+	double lengthStartToPointi;
+	double cosTheta;
+	double sinTheta;
+	for (int i = 0; i < numPointsPerCube[indexCube]; i++) {
+		// Calculate the vector from starting point to point i.
+		xStartToPointi = tableCubes[indexCube][i * 3    ] - xStart;
+		yStartToPointi = tableCubes[indexCube][i * 3 + 1] - yStart;
+		zStartToPointi = tableCubes[indexCube][i * 3 + 2] - zStart;
 
+		// If point i is at the opposite direction, ignore it.
+		//ALTERNATIVE: Can be implemented at distanceToNearestPointTouchingTheLine
+		//             by other ways, which may increase speed (really?).
+		cosTheta = xLine * xStartToPointi +
+				   yLine * yStartToPointi +
+				   zLine * zStartToPointi;	// Currently it is a innor product.
+		if (cosTheta < 0) {
+			continue;
+		}
+
+		// If point i is close enough, it touches, thus get what we want.
+		lengthStartToPointi = sqrt(xStartToPointi * xStartToPointi +
+								   yStartToPointi * yStartToPointi +
+								   zStartToPointi * zStartToPointi);
+		if (lengthStartToPointi <= distanceDefiningPointTouchesLine) {
+			distanceToReturn = lengthStartToPointi;
+			break;
+		}
+
+		// Calculate distanceToReturn = lengthLine * sinTheta.
+		cosTheta /= lengthStartToPointi * lengthLine;
+		sinTheta = sqrt(1 - cosTheta * cosTheta);
+		distanceTemp = lengthLine * sinTheta;
+
+		// If distanceToReturn is small enough, it's what we want.
+		if (distanceTemp <= distanceDefiningPointTouchesLine) {
+			distanceToReturn = distanceTemp;
+			break;
+		}
+	}
+
+	return distanceToReturn;
 }

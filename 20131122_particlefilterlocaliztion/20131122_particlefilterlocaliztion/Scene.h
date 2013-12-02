@@ -10,7 +10,11 @@ public:
 	Scene(void);
 	~Scene(void);
 	int initialize(char *fileScene, double lengthCubeEdge);
-	void setDistancePointTouchesLine(double distance);
+	double takeAShot(double xPoint, double yPoint, double zPoint, 
+					 double xFront, double yFront, double zFront,
+					 double xTop,   double yTop,   double zTop);
+
+	void setDistanceDefiningPointTouchesLine(double distance);
 	int printDPointsXYZ();
 	double *getRangeOfScene();
 	double **getTableCubes();
@@ -26,7 +30,7 @@ private:
 	int zNumCubes;
 	int xyNumCubes;
 	int *numPointsPerCube;
-	double distancePointTouchesLine;
+	double distanceDefiningPointTouchesLine;
 
 	void calcRangeOfScene();
 	void createTableCubes();
@@ -34,7 +38,9 @@ private:
 	double distanceToNearestPointTouchingTheLine(double xStart, double yStart, double zStart, 
 												 double xLine, double yLine, double zLine);
 	double distanceToNearestPointTouchingTheLineInACube(int indexCube,
-														double xLine, double yLine, double zLine);
+														double xStart, double yStart, double zStart,
+														double xLine, double yLine, double zLine,
+														double lengthLine);
 };
 
 #endif
