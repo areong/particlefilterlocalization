@@ -129,9 +129,9 @@ void Scene::createTableCubes() {
 	}
 	for (int i = 0; i < numPoints * 3; i += 3) {
 		int indexCube = XYZtoIndexOfCube(dPointsXYZ[i], dPointsXYZ[i+1], dPointsXYZ[i+2]);
-		tableCubes[indexCube][currentIndexEachCube[indexCube] * 3    ] = dPointsXYZ[0];
-		tableCubes[indexCube][currentIndexEachCube[indexCube] * 3 + 1] = dPointsXYZ[1];
-		tableCubes[indexCube][currentIndexEachCube[indexCube] * 3 + 2] = dPointsXYZ[2];
+		tableCubes[indexCube][currentIndexEachCube[indexCube] * 3    ] = dPointsXYZ[i    ];
+		tableCubes[indexCube][currentIndexEachCube[indexCube] * 3 + 1] = dPointsXYZ[i + 1];
+		tableCubes[indexCube][currentIndexEachCube[indexCube] * 3 + 2] = dPointsXYZ[i + 2];
 		currentIndexEachCube[indexCube]++;
 	}
 }
@@ -150,9 +150,9 @@ int Scene::XYZtoIndexOfCube(double x, double y, double z) {
 		return -1;
 
 	// Calculate index.
-	int xInd = (x - dRangeOfScene[1]) / lengthCubeEdge;
-	int yInd = (y - dRangeOfScene[3]) / lengthCubeEdge;
-	int zInd = (z - dRangeOfScene[5]) / lengthCubeEdge;
+	int xInd = (int)( (x - dRangeOfScene[1]) / lengthCubeEdge );
+	int yInd = (int)( (y - dRangeOfScene[3]) / lengthCubeEdge );
+	int zInd = (int)( (z - dRangeOfScene[5]) / lengthCubeEdge );
 	int index = zInd * xyNumCubes + yInd * xNumCubes + xInd;
 	return index;
 }
@@ -351,9 +351,6 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 			indicesNineCubes[i] = XYZtoIndexOfCube(pointsOfNine[i * 3],
 												   pointsOfNine[i * 3 + 1],
 												   pointsOfNine[i * 3 + 2]);
-			cout << i << '\t' << pointsOfNine[i * 3    ] << '\t' <<
-								 pointsOfNine[i * 3 + 1] << '\t' <<
-								 pointsOfNine[i * 3 + 2] << endl;
 			// Calculate distance.
 			if (indicesNineCubes[i] >= 0) {
 				double distance = distanceToNearestPointTouchingTheLineInACube(indicesNineCubes[i],
@@ -370,6 +367,11 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 			else
 				countCubesOutOfRange++;
 		}
+
+		// IF DISTANCE FOUND, BREAK THE LOOP.
+		// It came from the break of inner loop.
+		if (distanceShortest >= 0)
+			break;
 
 		// If all 'cubes' out of range, the break condition is satisfied.
 		if (countCubesOutOfRange == 9)
@@ -448,7 +450,7 @@ double Scene::distanceToNearestPointTouchingTheLineInACube(int indexCube,
 
 		// If distanceToReturn is small enough, it's what we want.
 		if (distanceTemp <= distanceDefiningPointTouchesLine) {
-			distanceToReturn = distanceTemp;
+			distanceToReturn = lengthStartToPointi;
 			break;
 		}
 	}
