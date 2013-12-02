@@ -69,27 +69,27 @@ void Scene::calcRangeOfScene() {
     // Calculate real range.
     for (int i = 0; i < numPoints * 3; i += 3) {
         // x
-        if (dPointsXYZ[i] > dRangeOfScene[0]) dRangeOfScene[0] = dPointsXYZ[i];
-        else if (dPointsXYZ[i] < dRangeOfScene[1]) dRangeOfScene[1] = dPointsXYZ[i];
+        if      (dPointsXYZ[i  ] > dRangeOfScene[0]) dRangeOfScene[0] = dPointsXYZ[i  ];
+        else if (dPointsXYZ[i  ] < dRangeOfScene[1]) dRangeOfScene[1] = dPointsXYZ[i  ];
         // y
-        if (dPointsXYZ[i+1] > dRangeOfScene[2]) dRangeOfScene[2] = dPointsXYZ[i+1];
+        if      (dPointsXYZ[i+1] > dRangeOfScene[2]) dRangeOfScene[2] = dPointsXYZ[i+1];
         else if (dPointsXYZ[i+1] < dRangeOfScene[3]) dRangeOfScene[3] = dPointsXYZ[i+1];
         // z
-        if (dPointsXYZ[i+2] > dRangeOfScene[4]) dRangeOfScene[4] = dPointsXYZ[i+2];
+        if      (dPointsXYZ[i+2] > dRangeOfScene[4]) dRangeOfScene[4] = dPointsXYZ[i+2];
         else if (dPointsXYZ[i+2] < dRangeOfScene[5]) dRangeOfScene[5] = dPointsXYZ[i+2];
     }
 
     // Round the range.
     for (int i = 0; i < 6; i += 2) {
         // Calculate rounded max.
-        if ((int)(dRangeOfScene[i] / lengthCubeEdge) >= 0)
-            dRangeOfScene[i] = ((int)(dRangeOfScene[i] / lengthCubeEdge) + 1) * lengthCubeEdge;
+        if ((int)(dRangeOfScene[i  ] / lengthCubeEdge) >= 0)
+            dRangeOfScene[i  ] = ((int)(dRangeOfScene[i  ] / lengthCubeEdge) + 1) * lengthCubeEdge;
         else
-            dRangeOfScene[i] = (int)(dRangeOfScene[i] / lengthCubeEdge) * lengthCubeEdge;
+            dRangeOfScene[i  ] =  (int)(dRangeOfScene[i  ] / lengthCubeEdge     ) * lengthCubeEdge;
 
         // Calculate rounded min.
         if ((int)(dRangeOfScene[i+1] / lengthCubeEdge) >= 0)
-            dRangeOfScene[i+1] = (int)(dRangeOfScene[i+1] / lengthCubeEdge) * lengthCubeEdge;
+            dRangeOfScene[i+1] =  (int)(dRangeOfScene[i+1] / lengthCubeEdge     ) * lengthCubeEdge;
         else
             dRangeOfScene[i+1] = ((int)(dRangeOfScene[i+1] / lengthCubeEdge) - 1) * lengthCubeEdge;
     }
