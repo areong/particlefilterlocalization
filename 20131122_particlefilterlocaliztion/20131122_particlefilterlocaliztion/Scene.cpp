@@ -162,16 +162,16 @@ int Scene::XYZtoIndexOfCube(double x, double y, double z) {
  *
  * What the algorithm looks like in 2D space:
  * 
- *  ¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q
- *  ¢x      ¢x      ¢x /    ¢x      ¢x      ¢x
- *  ¢x      ¢x7     ¢x6     ¢x8     ¢x      ¢x
- *  ¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q
- *  ¢x      ¢x     /¢x      ¢x      ¢x      ¢x
- *  ¢x    4 ¢x    3 ¢x    5 ¢x      ¢x      ¢x
- *  ¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q
- *  ¢x      ¢x £c/   ¢x      ¢x      ¢x      ¢x
- *  ¢x 1    ¢x 0    ¢x 2    ¢x      ¢x      ¢x
- *  ¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q¢w¢w¢w¢w¢w¢w¢q
+ *  +------+------+------+------+------+
+ *  |      |      | /    |      |      |
+ *  |      |7     |6     |8     |      |
+ *  +------+------+------+------+------+
+ *  |      |     /|      |      |      |
+ *  |    4 |    3 |    5 |      |      |
+ *  +------+------+------+------+------+
+ *  |      | £c/   |      |      |      |
+ *  | 1    | 0    | 2    |      |      |
+ *  +------+------+------+------+------+
  *
  *  0: Starting point
  *  0 to 9: Cubes where these points sit will be checked in order.
@@ -193,13 +193,13 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 
 	// Determine 2 vectors used in locating surrounding 8 points.
 	// 6 cases. In 2D a square is cut into 4 pieces by 45 degrees lines:
-	//  ¢z¢w¢w¢w¢w¢w¢w¢w¢{
-	//  ¢x\     /¢x
-	//  ¢x \   / ¢x
-	//  ¢x   X   ¢x
-	//  ¢x /   \ ¢x
-	//  ¢x/     \¢x (It is a square.)
-	//  ¢|¢w¢w¢w¢w¢w¢w¢w¢}
+	//  +-------+
+	//  |\     /|
+	//  | \   / |
+	//  |   X   |
+	//  | /   \ |
+	//  |/     \| (It is a square.)
+	//  +-------+
 	// And a 3D box is cut into 6 regions by 45 degrees planes. Thus 6 cases here.
 	// Then set the length of line vector. There are 3 cases for 3 axes.
 	double vector1ToSurroundPoint[3]; // x, y, z components.
@@ -284,13 +284,13 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
 
 	// Create an array to store the 9 points, including the starting point.
 	// Order:
-	//     ¡ô
+	//     ^
 	//  4  3  2
-	//  5  0  1 ¡÷
+	//  5  0  1 >
 	//  6  7  8
 	//  0: The starting point.
-	//  ¡÷: vector1ToSurroundPoint
-	//  ¡ô: vector2ToSurroundPoint
+	//  ^: vector1ToSurroundPoint
+	//  >: vector2ToSurroundPoint
 	double pointsOfNine[27];
 	// point 0
 	pointsOfNine[ 0] = xStart;
