@@ -19,6 +19,7 @@ public:
     int printDPointsXYZ();
     double *getRangeOfScene();
     double **getTableCubes();
+    int *getNumPointsEachCube();
 
 private:
     double *dPointsXYZ;
@@ -30,7 +31,7 @@ private:
     int yNumCubes;
     int zNumCubes;
     int xyNumCubes;
-    int *numPointsPerCube;
+    int *numPointsEachCube;
     double distanceDefiningPointTouchesLine;
 
     void calcRangeOfScene();

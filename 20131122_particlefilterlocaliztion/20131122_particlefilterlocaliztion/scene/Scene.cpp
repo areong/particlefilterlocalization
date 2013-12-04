@@ -66,6 +66,11 @@ double **Scene::getTableCubes() {
     // Again, how to forbid changing the array when passed outside?
 }
 
+int *Scene::getNumPointsEachCube() {
+    return numPointsEachCube;
+    // Again, how to forbid changing the array when passed outside?
+}
+
 /* -------------------------
  * Private
  * ------------------------- */
@@ -108,23 +113,23 @@ void Scene::createTableCubes() {
     xyNumCubes = xNumCubes * yNumCubes;
     int numCubes = xNumCubes * yNumCubes * zNumCubes;
 
-    // Create tableCubes and numPointsPerCube.
+    // Create tableCubes and numPointsEachCube.
     tableCubes = new double *[numCubes];
-    numPointsPerCube = new int[numCubes];
+    numPointsEachCube = new int[numCubes];
     for (int i = 0; i < numCubes; i++)
-        numPointsPerCube[i] = 0;
+        numPointsEachCube[i] = 0;
 
     // Count number of points per cube.
     for (int i = 0; i < numPoints * 3; i += 3) {
-        numPointsPerCube[ XYZtoIndexOfCube(dPointsXYZ[i], dPointsXYZ[i+1], dPointsXYZ[i+2]) ]++;
+        numPointsEachCube[ XYZtoIndexOfCube(dPointsXYZ[i], dPointsXYZ[i+1], dPointsXYZ[i+2]) ]++;
     }
 
     // Create entries of tableCubes.
     for (int i = 0; i < numCubes; i++) {
         // No points in cube, ignore.
-        if (numPointsPerCube == 0) continue;
+        if (numPointsEachCube == 0) continue;
         // There are points in cube, create entry.
-        tableCubes[i] = new double[numPointsPerCube[i] * 3];
+        tableCubes[i] = new double[numPointsEachCube[i] * 3];
     }
 
     // Fill in points into entries of tableCubes.
@@ -422,7 +427,7 @@ double Scene::distanceToNearestPointTouchingTheLineInACube(int indexCube,
     double lengthStartToPointi;
     double cosTheta;
     double sinTheta;
-    for (int i = 0; i < numPointsPerCube[indexCube]; i++) {
+    for (int i = 0; i < numPointsEachCube[indexCube]; i++) {
         // Calculate the vector from starting point to point i.
         xStartToPointi = tableCubes[indexCube][i * 3    ] - xStart;
         yStartToPointi = tableCubes[indexCube][i * 3 + 1] - yStart;
