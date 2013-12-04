@@ -21,7 +21,7 @@ int main() {
     // Calculate the distance from a point to the scene along a line.
     // Parameters:
     //  1-3: Point's x,y,z coordinates.
-    //  4-6: Line's direction vector. Not being a normal vector is okay.
+    //  4-6: Line's direction vector. Not being a unit vector is okay.
     // Return:
     //  The distance. Unit is meter.
     double distance = sceneMain.calcDistanceFromPointAlongLine(-1, 0, 0, -0.5, 0.5, 1);
