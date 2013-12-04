@@ -13,7 +13,8 @@ public:
     double takeAShot(double xPoint, double yPoint, double zPoint, 
                      double xFront, double yFront, double zFront,
                      double xTop,   double yTop,   double zTop);
-
+    double calcDistanceFromPointAlongLine(double xStart, double yStart, double zStart, 
+                                          double xLine, double yLine, double zLine);
     void setDistanceDefiningPointTouchesLine(double distance);
     int printDPointsXYZ();
     double *getRangeOfScene();

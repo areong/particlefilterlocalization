@@ -35,6 +35,11 @@ double Scene::takeAShot(double xPoint, double yPoint, double zPoint,
     return distanceToNearestPointTouchingTheLine(xPoint, yPoint, zPoint, xFront, yFront, zFront);
 }
 
+double Scene::calcDistanceFromPointAlongLine(double xPoint, double yPoint, double zPoint, 
+                                             double xFront, double yFront, double zFront) {
+    return distanceToNearestPointTouchingTheLine(xPoint, yPoint, zPoint, xFront, yFront, zFront);
+}
+
 void Scene::setDistanceDefiningPointTouchesLine(double distance) {
     distanceDefiningPointTouchesLine = distance;
 }
