@@ -25,12 +25,12 @@ private:
     VideoFrameRef videoFrameRefDepth;
     int widthFrame;
     int heightFrame;
-    uint16_t *depthPhoto;
+    DepthPixel *depthPhoto;
     int *depthPhotoSampled;
     double *samplingVectorsCameraCoordinates;
     double *samplingVectorsRealWorldCoordinates;
 
-    void storeDepthDataIntoDepthPhoto(const DepthPixel* depthData);
+    int *convertDepthPixelArrayToIntArray(const DepthPixel* depthPixelArray, int length);
 };
 
 typedef enum

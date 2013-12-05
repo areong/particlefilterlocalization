@@ -22,7 +22,7 @@ int OpenniCamera::initialize() {
     // Take a first shot to get width and height data.
     videoStreamDepth.readFrame(&videoFrameRefDepth);
 
-    // Get resolutions AFTER readFrame(). (BEDORE causes wrong.)
+    // Get resolutions AFTER readFrame(). (BEFORE causes wrong.)
     widthFrame = videoFrameRefDepth.getWidth();
     heightFrame = videoFrameRefDepth.getHeight();
 
@@ -40,4 +40,24 @@ void OpenniCamera::takeNewDepthPhoto(double xFront, double yFront, double zFront
     depthPhoto = (uint16_t *)videoFrameRefDepth.getData();
 
     cout << depthPhoto[15000] << endl;
+}
+
+int *OpenniCamera::getDepthPhoto() {
+    return convertDepthPixelArrayToIntArray(depthPhoto, widthFrame * heightFrame);
+}
+
+/* --------------------------------
+ * Private
+ * -------------------------------- */
+
+int *OpenniCamera::convertDepthPixelArrayToIntArray(const DepthPixel* depthPixelArray, int length) {
+    int *intArray;
+    if (length <= 0)
+        intArray = NULL;
+    else {
+        intArray = new int[length];
+        for (int i = 0; i < length; i++)
+            intArray[i] = depthPixelArray[i];
+    }
+    return intArray;
 }
