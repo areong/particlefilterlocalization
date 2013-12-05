@@ -58,8 +58,11 @@ int main() {
 
     OpenniCamera camera;
     camera.initialize();
+    camera.setSamplingMethod(SAMPLING_GRID, 4, 3);
     camera.takeNewDepthPhoto(-1, 0, 0, 0, 0, 1);
     int *photo = camera.getDepthPhoto();
+
+    camera.shutdown();
 
     system("pause");
     return 0;
