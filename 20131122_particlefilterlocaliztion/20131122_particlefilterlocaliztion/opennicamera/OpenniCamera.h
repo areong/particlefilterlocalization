@@ -25,10 +25,20 @@ private:
     VideoFrameRef videoFrameRefDepth;
     int widthFrame;
     int heightFrame;
-    int* depthPhoto;
+    uint16_t *depthPhoto;
     int *depthPhotoSampled;
     double *samplingVectorsCameraCoordinates;
     double *samplingVectorsRealWorldCoordinates;
+
+    void storeDepthDataIntoDepthPhoto(const DepthPixel* depthData);
 };
+
+typedef enum
+{
+	SAMPLING_GRID = 1,
+	SAMPLING_GRID_RANDOM = 2,
+	SAMPLING_RANDOM = 3,
+
+} SamplingMethod;
 
 #endif

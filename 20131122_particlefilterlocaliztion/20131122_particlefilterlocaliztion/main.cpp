@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <iostream>
+#include "opennicamera/OpenniCamera.h"
 #include "scene/Scene.h"
 
 int main() {
@@ -54,6 +55,12 @@ int main() {
         cout << tableCubes[0][0] << '\t'<< tableCubes[0][1] << '\t' << tableCubes[0][2] << endl;
     else
         cout << "No point in cube no.0." << endl;
+
+    OpenniCamera camera;
+    camera.initialize();
+    for (int i = 0; i < 100; i++) {
+        camera.takeNewDepthPhoto(-1, 0, 0, 0, 0, 1);
+    }
 
     system("pause");
     return 0;
