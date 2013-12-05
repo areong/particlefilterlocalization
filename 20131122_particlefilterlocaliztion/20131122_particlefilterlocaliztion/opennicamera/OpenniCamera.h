@@ -20,7 +20,12 @@ public:
     double *getSamplingVectorsRealWorldCoordinates();
 
 private:
-    DepthPixel* depthPhoto;
+    Device device;
+    VideoStream videoStreamDepth;
+    VideoFrameRef videoFrameRefDepth;
+    int widthFrame;
+    int heightFrame;
+    int* depthPhoto;
     int *depthPhotoSampled;
     double *samplingVectorsCameraCoordinates;
     double *samplingVectorsRealWorldCoordinates;
