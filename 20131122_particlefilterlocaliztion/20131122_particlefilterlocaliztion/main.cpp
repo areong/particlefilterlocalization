@@ -4,6 +4,7 @@
 #include "scene/Scene.h"
 #include "viewer/DataDisplayerTableCubes.h"
 #include "viewer/Viewer.h"
+using namespace std;
 
 void callbackInViewerMainLoopBeforeDrawing();
 void callbackAfterViewerMainLoop();

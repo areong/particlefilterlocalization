@@ -1,4 +1,6 @@
 #include "ReadPlyByRPly.h"
+#include <iostream>
+using namespace std;
 
 ReadPlyByRPly::ReadPlyByRPly(void) {
     indexVertex = 0;

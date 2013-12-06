@@ -1,9 +1,7 @@
 #ifndef SCENE_READPLYBYRPLY_H
 #define SCENE_READPLYBYRPLY_H
 
-#include <iostream>
 #include "../rply/rply.h"
-using namespace std;
 
 class ReadPlyByRPly {
 public:

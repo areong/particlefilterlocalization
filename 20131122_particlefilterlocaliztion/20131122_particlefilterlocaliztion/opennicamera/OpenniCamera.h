@@ -1,9 +1,7 @@
 #ifndef OPENNICAMERA_OPENNICAMERA_H
 #define OPENNICAMERA_OPENNICAMERA_H
 
-#include <iostream>
 #include "OpenNI.h"
-using namespace std;
 using namespace openni;
 
 typedef enum {

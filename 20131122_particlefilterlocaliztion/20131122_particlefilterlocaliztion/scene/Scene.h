@@ -1,10 +1,6 @@
 #ifndef SCENE_SCENE_H
 #define SCENE_SCENE_H
 
-#include <cmath>
-#include <iostream>
-#include "ReadPlyByRPly.h"
-
 class Scene {
 public:
     Scene(void);

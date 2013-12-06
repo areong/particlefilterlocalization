@@ -1,4 +1,6 @@
 #include "OpenniCamera.h"
+#include <iostream>
+using namespace std;
 
 OpenniCamera::OpenniCamera(void) {
 }

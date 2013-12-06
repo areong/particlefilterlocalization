@@ -1,4 +1,8 @@
 #include "Scene.h"
+#include <cmath>
+#include <iostream>
+#include "ReadPlyByRPly.h"
+using namespace std;
 
 Scene::Scene(void) {
     for (int i = 0; i < 6; i++) {
