@@ -69,6 +69,7 @@ int main(int argc, char** argv) {
     //camera.initialize();
     //camera.setSamplingMethod(SAMPLING_GRID, 4, 3);
     //camera.takeNewDepthPhoto(-1, 0, 0, 0, 0, 1);
+    //camera.sampleTheDepthPhoto();
     //int *photo = camera.getDepthPhoto();
     
 

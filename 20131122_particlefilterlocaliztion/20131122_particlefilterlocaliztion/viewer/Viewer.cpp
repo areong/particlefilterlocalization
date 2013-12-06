@@ -15,15 +15,15 @@ Viewer::~Viewer(void) {
 
 int Viewer::initialize(int argc, char** argv) {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+    //glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(500, 400);
     glutInitWindowPosition(100, 100);
     glutCreateWindow(titleWindow);
 
     initOpenGLCallbacks();
 
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE_2D);
+    //glDisable(GL_DEPTH_TEST);
+    //glEnable(GL_TEXTURE_2D);
 
     return 0;
 }
