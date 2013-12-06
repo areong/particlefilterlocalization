@@ -17,10 +17,8 @@ int Viewer::initialize(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(500, 400);
-    glutCreateWindow (titleWindow);
-    
-    //     glutFullScreen();
-    //glutSetCursor(GLUT_CURSOR_NONE);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow(titleWindow);
 
     initOpenGLCallbacks();
 
@@ -32,6 +30,15 @@ int Viewer::initialize(int argc, char** argv) {
 
 void Viewer::runMainLoop() {
     glutMainLoop();
+}
+
+/* ------------------------------------------
+ * setCallbackInMainLoopBeforeDrawing
+ * Set the callback function to be called each time in main loop
+ * before drawing.
+ * ------------------------------------------ */
+void Viewer::setCallbackInMainLoopBeforeDrawing(void (*cb)()) {
+    callbackInMainLoopBeforeDrawing = cb;
 }
 
 /* ------------------------------------------
@@ -52,6 +59,22 @@ void Viewer::setCallbackKeyEsc(void (*cb)()) {
  * ---------------------------------------- */
 
 void Viewer::display() {
+    // Call the callback before drawing.
+    callbackInMainLoopBeforeDrawing();
+
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
+    glClear(GL_COLOR_BUFFER_BIT);         // Clear the color buffer (background)
+ 
+    // Draw a Red 1x1 Square centered at origin
+    glBegin(GL_QUADS);              // Each set of 4 vertices form a quad
+        glColor3f(1.0f, 0.0f, 0.0f); // Red
+        glVertex2f(-0.5f, -0.5f);    // x, y
+        glVertex2f( 0.5f, -0.5f);
+        glVertex2f( 0.5f,  0.5f);
+        glVertex2f(-0.5f,  0.5f);
+    glEnd();
+ 
+    glFlush();  // Render now
 }
 
 void Viewer::onKey(unsigned char key, int /*x*/, int /*y*/) {
@@ -61,7 +84,6 @@ void Viewer::onKey(unsigned char key, int /*x*/, int /*y*/) {
             callbackKeyEsc();
         exit (1);
     }
-
 }
 
 void Viewer::initOpenGLCallbacks() {

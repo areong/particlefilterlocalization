@@ -6,7 +6,6 @@
 #define VIEWER_H
 
 #include <windows.h>
-#include <GL/gl.h>
 #include <glut.h>
 
 class Viewer {
@@ -15,11 +14,11 @@ public:
     ~Viewer(void);
     int initialize(int argc, char** argv);
     void runMainLoop();
+    void setCallbackInMainLoopBeforeDrawing(void (*cb)());
     void setCallbackKeyEsc(void (*cb)());
 
 protected:
     virtual void display();
-    virtual void displayPostDraw(){};   // Overload to draw over the screen image
     virtual void onKey(unsigned char key, int x, int y);
 
     void initOpenGLCallbacks();
@@ -32,7 +31,8 @@ private:
 
     char *titleWindow;
 
-    void (*callbackKeyEsc) ();
+    void (*callbackInMainLoopBeforeDrawing)();
+    void (*callbackKeyEsc)();
 };
 
 #endif

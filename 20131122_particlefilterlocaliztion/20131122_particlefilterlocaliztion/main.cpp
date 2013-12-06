@@ -4,7 +4,8 @@
 #include "scene/Scene.h"
 #include "viewer/Viewer.h"
 
-void afterViewerMainLoop();
+void callbackInViewerMainLoopBeforeDrawing();
+void callbackAfterViewerMainLoop();
 
 // Create Scene object.
 Scene sceneMain;
@@ -73,7 +74,8 @@ int main(int argc, char** argv) {
 
     Viewer viewerMain("Particle Filter Localization");
     viewerMain.initialize(argc, argv);
-    viewerMain.setCallbackKeyEsc(&afterViewerMainLoop);
+    viewerMain.setCallbackInMainLoopBeforeDrawing(&callbackInViewerMainLoopBeforeDrawing);
+    viewerMain.setCallbackKeyEsc(&callbackAfterViewerMainLoop);
     viewerMain.runMainLoop();
 
     
@@ -82,7 +84,11 @@ int main(int argc, char** argv) {
     return 0;
 }
 
-void afterViewerMainLoop() {
+void callbackInViewerMainLoopBeforeDrawing() {
+    //cout << "In glutMainLoop() before drawing." << endl;
+}
+
+void callbackAfterViewerMainLoop() {
     cout << "After glutMainLoop()." << endl;
     //camera.shutdown();
 }
