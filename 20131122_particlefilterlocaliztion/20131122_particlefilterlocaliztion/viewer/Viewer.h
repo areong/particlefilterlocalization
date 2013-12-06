@@ -5,8 +5,8 @@
 #ifndef VIEWER_VIEWER_H
 #define VIEWER_VIEWER_H
 
-#include <windows.h>
-#include <glut.h>
+// Foward declarations
+class IDataDisplayer;
 
 class Viewer {
 public:
@@ -16,6 +16,9 @@ public:
     void runMainLoop();
     void setCallbackInMainLoopBeforeDrawing(void (*cb)());
     void setCallbackKeyEsc(void (*cb)());
+
+    void addDataDisplayer(IDataDisplayer* iDataDisplayer);
+    void removeAllDataDisplayers();
 
 protected:
     virtual void display();
@@ -33,6 +36,10 @@ private:
 
     void (*callbackInMainLoopBeforeDrawing)();
     void (*callbackKeyEsc)();
+
+    // An array to store IDataDisplayer pointers.
+    IDataDisplayer** iDataDisplayers;
+    int numIDataDisplayers;
 };
 
 #endif

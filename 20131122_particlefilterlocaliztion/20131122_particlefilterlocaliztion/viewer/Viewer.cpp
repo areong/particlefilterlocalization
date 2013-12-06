@@ -3,10 +3,15 @@
  * ---------------------------------------- */
 
 #include "Viewer.h"
+#include <windows.h>
+#include <glut.h>
+#include "IDataDisplayer.h"
 
 Viewer::Viewer(char* title) {
     self = this;
     titleWindow = title;
+    iDataDisplayers = NULL;
+    numIDataDisplayers = 0;
 }
 
 Viewer::~Viewer(void) {
@@ -57,6 +62,34 @@ void Viewer::setCallbackKeyEsc(void (*cb)()) {
     callbackKeyEsc = cb;
 }
 
+void Viewer::addDataDisplayer(IDataDisplayer* iDataDisplayer) {
+    // If it is the first adding.
+    if (iDataDisplayers == NULL) {
+        iDataDisplayers = new IDataDisplayer *[1];
+        iDataDisplayers[0] = iDataDisplayer;
+        numIDataDisplayers = 1;
+    }
+    // If it is not the first adding.
+    else {
+        IDataDisplayer** iDataDisplayersTemp = new IDataDisplayer *[numIDataDisplayers + 1];
+
+        // Copy from the old array.
+        for (int i = 0; i < numIDataDisplayers; i++)
+            iDataDisplayersTemp[i] = iDataDisplayers[i];
+
+        // Add the new element.
+        numIDataDisplayers += 1;
+        iDataDisplayersTemp[numIDataDisplayers - 1] = iDataDisplayer;
+        
+        // Make member array point to this array.
+        iDataDisplayers = iDataDisplayersTemp;
+    }
+}
+
+void Viewer::removeAllDataDisplayers() {
+    iDataDisplayers = NULL;
+}
+
 /* ----------------------------------------
  * Protected:
  * ---------------------------------------- */
@@ -66,15 +99,10 @@ void Viewer::display() {
     callbackInMainLoopBeforeDrawing();
 
     glClear(GL_COLOR_BUFFER_BIT);         // Clear the color buffer (background)
- 
-    // Draw a Red 1x1 Square centered at origin
-    glBegin(GL_QUADS);              // Each set of 4 vertices form a quad
-        glColor3f(1.0f, 0.0f, 0.0f); // Red
-        glVertex2f(-0.5f, -0.5f);    // x, y
-        glVertex2f( 0.5f, -0.5f);
-        glVertex2f( 0.5f,  0.5f);
-        glVertex2f(-0.5f,  0.5f);
-    glEnd();
+
+    // Display by every IDataDisplay.
+    for (int i = 0; i < numIDataDisplayers; i++)
+        iDataDisplayers[i]->display();
  
     glFlush();  // Render now
 }

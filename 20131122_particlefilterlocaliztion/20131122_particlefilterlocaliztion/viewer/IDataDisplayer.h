@@ -9,7 +9,7 @@
  * -----------------------------------------------------  */
 class IDataDisplayer {
 public:
-    virtual void display();
-}
+    virtual void display() = 0;
+};
 
 #endif

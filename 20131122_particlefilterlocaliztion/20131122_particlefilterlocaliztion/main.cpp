@@ -2,6 +2,7 @@
 #include <iostream>
 #include "opennicamera/OpenniCamera.h"
 #include "scene/Scene.h"
+#include "viewer/DataDisplayerTableCubes.h"
 #include "viewer/Viewer.h"
 
 void callbackInViewerMainLoopBeforeDrawing();
@@ -71,11 +72,15 @@ int main(int argc, char** argv) {
     //camera.takeNewDepthPhoto(-1, 0, 0, 0, 0, 1);
     //int *photo = camera.getDepthPhoto();
     
+    DataDisplayerTableCubes dataDisplayerTableCubes;
 
     Viewer viewerMain("Particle Filter Localization");
     viewerMain.initialize(argc, argv);
     viewerMain.setCallbackInMainLoopBeforeDrawing(&callbackInViewerMainLoopBeforeDrawing);
     viewerMain.setCallbackKeyEsc(&callbackAfterViewerMainLoop);
+    
+    viewerMain.addDataDisplayer(&dataDisplayerTableCubes);
+
     viewerMain.runMainLoop();
 
     

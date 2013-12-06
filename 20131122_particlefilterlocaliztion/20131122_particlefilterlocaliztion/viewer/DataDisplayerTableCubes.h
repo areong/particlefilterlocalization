@@ -7,6 +7,7 @@ class DataDisplayerTableCubes : public IDataDisplayer {
 public:
     DataDisplayerTableCubes(void);
     ~DataDisplayerTableCubes(void);
+    void display();
 };
 
 #endif
