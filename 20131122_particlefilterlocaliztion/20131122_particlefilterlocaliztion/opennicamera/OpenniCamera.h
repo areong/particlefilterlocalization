@@ -1,5 +1,5 @@
-#ifndef OPENNICAMERA_H
-#define OPENNICAMERA_H
+#ifndef OPENNICAMERA_OPENNICAMERA_H
+#define OPENNICAMERA_OPENNICAMERA_H
 
 #include <iostream>
 #include "OpenNI.h"

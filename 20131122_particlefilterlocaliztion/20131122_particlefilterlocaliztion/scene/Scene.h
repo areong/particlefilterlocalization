@@ -1,5 +1,5 @@
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef SCENE_SCENE_H
+#define SCENE_SCENE_H
 
 #include <cmath>
 #include <iostream>

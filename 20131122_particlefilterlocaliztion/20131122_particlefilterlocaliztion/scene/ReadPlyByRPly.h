@@ -1,5 +1,5 @@
-#ifndef READPLYBYRPLY_H
-#define READPLYBYRPLY_H
+#ifndef SCENE_READPLYBYRPLY_H
+#define SCENE_READPLYBYRPLY_H
 
 #include <iostream>
 #include "../rply/rply.h"

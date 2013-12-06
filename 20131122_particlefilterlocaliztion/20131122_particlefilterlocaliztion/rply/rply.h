@@ -1,5 +1,5 @@
-#ifndef RPLY_H
-#define RPLY_H
+#ifndef RPLY_RPLY_H
+#define RPLY_RPLY_H
 /* ----------------------------------------------------------------------
  * RPly library, read/write PLY files
  * Diego Nehab, IMPA
@@ -350,7 +350,7 @@ int ply_close(p_ply ply);
 }
 #endif
 
-#endif /* RPLY_H */
+#endif /* RPLY_RPLY_H */
 
 /* ----------------------------------------------------------------------
  * Copyright (C) 2003-2011 Diego Nehab. All rights reserved.

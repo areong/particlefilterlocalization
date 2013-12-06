@@ -2,8 +2,8 @@
  * Learned from SimpleViewer of OpenNI2.
  * ---------------------------------------- */
 
-#ifndef VIEWER_H
-#define VIEWER_H
+#ifndef VIEWER_VIEWER_H
+#define VIEWER_VIEWER_H
 
 #include <windows.h>
 #include <glut.h>
