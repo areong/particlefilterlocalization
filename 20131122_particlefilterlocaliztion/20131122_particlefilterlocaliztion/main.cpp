@@ -2,8 +2,9 @@
 #include <iostream>
 #include "opennicamera/OpenniCamera.h"
 #include "scene/Scene.h"
+#include "viewer/Viewer.h"
 
-int main() {
+int main(int argc, char** argv) {
     // Create Scene object.
     Scene sceneMain;
 
@@ -62,6 +63,12 @@ int main() {
     //camera.takeNewDepthPhoto(-1, 0, 0, 0, 0, 1);
     //int *photo = camera.getDepthPhoto();
     //camera.shutdown();
+
+    Viewer viewerMain("Particle Filter Localization");
+    viewerMain.initialize(argc, argv);
+    viewerMain.runMainLoop();
+
+    cout << "After glutMainLoop()." << endl;
 
     system("pause");
     return 0;
