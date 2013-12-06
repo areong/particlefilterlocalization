@@ -48,7 +48,7 @@ private:
     void calcSamplingVectorsByGrid(double xFront, double yFront, double zFront, 
                                    double xTop, double yTop, double zTop);
     int convertIntXYToIndexOfPhotoArray(int x, int y);
-    void sampleThePhoto();
+    void sampleTheDepthPhoto();
 };
 
 #endif

@@ -25,6 +25,9 @@ int Viewer::initialize(int argc, char** argv) {
     //glDisable(GL_DEPTH_TEST);
     //glEnable(GL_TEXTURE_2D);
 
+    // Set the clear color. It will not be changed in the main loop.
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
+
     return 0;
 }
 
@@ -62,7 +65,6 @@ void Viewer::display() {
     // Call the callback before drawing.
     callbackInMainLoopBeforeDrawing();
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set background color to black and opaque
     glClear(GL_COLOR_BUFFER_BIT);         // Clear the color buffer (background)
  
     // Draw a Red 1x1 Square centered at origin
