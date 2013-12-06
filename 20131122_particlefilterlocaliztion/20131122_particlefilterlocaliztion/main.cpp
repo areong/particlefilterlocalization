@@ -4,9 +4,16 @@
 #include "scene/Scene.h"
 #include "viewer/Viewer.h"
 
+void afterViewerMainLoop();
+
+// Create Scene object.
+Scene sceneMain;
+
+// Create OpenniCamera object.
+//OpenniCamera camera;
+
 int main(int argc, char** argv) {
-    // Create Scene object.
-    Scene sceneMain;
+     
 
     // Initialize.
     // Parameters:
@@ -57,19 +64,25 @@ int main(int argc, char** argv) {
     else
         cout << "No point in cube no.0." << endl;
 
-    //OpenniCamera camera;
+    
     //camera.initialize();
     //camera.setSamplingMethod(SAMPLING_GRID, 4, 3);
     //camera.takeNewDepthPhoto(-1, 0, 0, 0, 0, 1);
     //int *photo = camera.getDepthPhoto();
-    //camera.shutdown();
+    
 
     Viewer viewerMain("Particle Filter Localization");
     viewerMain.initialize(argc, argv);
+    viewerMain.setCallbackKeyEsc(&afterViewerMainLoop);
     viewerMain.runMainLoop();
 
-    cout << "After glutMainLoop()." << endl;
+    
 
     system("pause");
     return 0;
+}
+
+void afterViewerMainLoop() {
+    cout << "After glutMainLoop()." << endl;
+    //camera.shutdown();
 }
