@@ -21,8 +21,8 @@ void DataDisplayerTableCubes::display() {
 
     for (int indexCube = indexCubeStart; indexCube < indexCubeEnd; indexCube++) {
         for (int i = 0; i < numPointsEachCube[indexCube]; i++) {
-             x = (tableCubes[indexCube][i*3  ] - rangeOfScene[1]) / sizeSceneX *   2  - 1;
-             y = (tableCubes[indexCube][i*3+1] - rangeOfScene[3]) / sizeSceneY * (-2) + 1;
+             x = (tableCubes[indexCube][i*3  ] - rangeOfScene[1]) / sizeSceneX * 2 - 1;
+             y = (tableCubes[indexCube][i*3+1] - rangeOfScene[3]) / sizeSceneY * 2 - 1;
 
              glBegin(GL_QUADS);
                 glColor3f(1.0f, 0.0f, 0.0f); // Red
