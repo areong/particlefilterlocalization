@@ -19,7 +19,6 @@ public:
     int initialize();
     void shutdown();
     void setSamplingMethod(SamplingMethod method, int arga, int argb);
-    void sampleTheDepthPhoto();
     void takeNewDepthPhoto(double xFront, double yFront, double zFront, 
                            double xTop, double yTop, double zTop);
     int *getDepthPhoto();
@@ -49,6 +48,7 @@ private:
     void calcSamplingVectorsByGrid(double xFront, double yFront, double zFront, 
                                    double xTop, double yTop, double zTop);
     int convertIntXYToIndexOfPhotoArray(int x, int y);
+    void sampleThePhoto();
 };
 
 #endif
