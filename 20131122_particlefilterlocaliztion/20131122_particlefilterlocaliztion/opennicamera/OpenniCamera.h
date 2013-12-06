@@ -6,12 +6,10 @@
 using namespace std;
 using namespace openni;
 
-typedef enum
-{
+typedef enum {
 	SAMPLING_GRID = 1,
 	SAMPLING_GRID_RANDOM = 2,
 	SAMPLING_RANDOM = 3,
-
 } SamplingMethod;
 
 class OpenniCamera {
