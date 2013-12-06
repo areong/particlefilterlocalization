@@ -48,6 +48,26 @@ void Scene::setDistanceDefiningPointTouchesLine(double distance) {
     distanceDefiningPointTouchesLine = distance;
 }
 
+/* ---------------------------------------------------
+ * XYZtoIndexOfCube
+ * Return index of cube given an (x, y, z) coordinate.
+ * If out of range of scene, return -1.
+ * ---------------------------------------------------  */
+int Scene::XYZtoIndexOfCube(double x, double y, double z) {
+    // Check out of range.
+    if (x > dRangeOfScene[0] || x < dRangeOfScene[1] ||
+        y > dRangeOfScene[2] || y < dRangeOfScene[3] ||
+        z > dRangeOfScene[4] || z < dRangeOfScene[5] )
+        return -1;
+
+    // Calculate index.
+    int xInd = (int)( (x - dRangeOfScene[1]) / lengthCubeEdge );
+    int yInd = (int)( (y - dRangeOfScene[3]) / lengthCubeEdge );
+    int zInd = (int)( (z - dRangeOfScene[5]) / lengthCubeEdge );
+    int index = zInd * xyNumCubes + yInd * xNumCubes + xInd;
+    return index;
+}
+
 int Scene::printDPointsXYZ() {
     // If array is not created yet.
     if (!dPointsXYZ) return 1;
@@ -73,6 +93,14 @@ double **Scene::getTableCubes() {
 int *Scene::getNumPointsEachCube() {
     return numPointsEachCube;
     // Again, how to forbid changing the array when passed outside?
+}
+
+int *Scene::getNumCubes() {
+    int *nums = new int[3];
+    nums[0] = xNumCubes;
+    nums[1] = yNumCubes;
+    nums[2] = zNumCubes;
+    return nums;
 }
 
 /* -------------------------
@@ -148,27 +176,6 @@ void Scene::createTableCubes() {
         tableCubes[indexCube][currentIndexEachCube[indexCube] * 3 + 2] = dPointsXYZ[i + 2];
         currentIndexEachCube[indexCube]++;
     }
-}
-
-/* ---------------------------------------------------
- * XYZtoIndexOfCube
- * Return index of cube given an (x, y, z) coordinate.
- * If out of range of scene, return -1.
- * ---------------------------------------------------  */
-
-int Scene::XYZtoIndexOfCube(double x, double y, double z) {
-    // Check out of range.
-    if (x > dRangeOfScene[0] || x < dRangeOfScene[1] ||
-        y > dRangeOfScene[2] || y < dRangeOfScene[3] ||
-        z > dRangeOfScene[4] || z < dRangeOfScene[5] )
-        return -1;
-
-    // Calculate index.
-    int xInd = (int)( (x - dRangeOfScene[1]) / lengthCubeEdge );
-    int yInd = (int)( (y - dRangeOfScene[3]) / lengthCubeEdge );
-    int zInd = (int)( (z - dRangeOfScene[5]) / lengthCubeEdge );
-    int index = zInd * xyNumCubes + yInd * xNumCubes + xInd;
-    return index;
 }
 
 /* ------------------------------------------------------------------------------

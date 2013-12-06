@@ -74,6 +74,7 @@ int main(int argc, char** argv) {
     //int *photo = camera.getDepthPhoto();
     
     DataDisplayerTableCubes dataDisplayerTableCubes;
+    dataDisplayerTableCubes.setScene(&sceneMain);
 
     Viewer viewerMain("Particle Filter Localization");
     viewerMain.initialize(argc, argv);
