@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include "opennicamera/OpenniCamera.h"
+#include "particlefilter/ParticleFilter.h"
 #include "scene/Scene.h"
 #include "viewer/DataDisplayerTableCubes.h"
 #include "viewer/Viewer.h"
@@ -14,6 +15,8 @@ Scene sceneMain;
 
 // Create OpenniCamera object.
 //OpenniCamera camera;
+
+ParticleFilter particleFilter;
 
 int main(int argc, char** argv) {
      
@@ -72,6 +75,8 @@ int main(int argc, char** argv) {
     //camera.setSamplingMethod(SAMPLING_GRID, 4, 3);
     //camera.takeNewDepthPhoto(-1, 0, 0, 0, 0, 1);
     //int *photo = camera.getDepthPhoto();
+
+    particleFilter.initialize(&sceneMain);
     
     DataDisplayerTableCubes dataDisplayerTableCubes;
     dataDisplayerTableCubes.setScene(&sceneMain);
