@@ -3,6 +3,7 @@
 #include "opennicamera/OpenniCamera.h"
 #include "particlefilter/ParticleFilter.h"
 #include "scene/Scene.h"
+#include "viewer/DataDisplayerParticles.h"
 #include "viewer/DataDisplayerTableCubes.h"
 #include "viewer/Viewer.h"
 using namespace std;
@@ -81,12 +82,16 @@ int main(int argc, char** argv) {
     DataDisplayerTableCubes dataDisplayerTableCubes;
     dataDisplayerTableCubes.setScene(&sceneMain);
 
+    DataDisplayerParticles dataDisplayerParticles;
+    dataDisplayerParticles.setParticleFilter(&particleFilter);
+
     Viewer viewerMain("Particle Filter Localization");
     viewerMain.initialize(argc, argv);
     viewerMain.setCallbackInMainLoopBeforeDrawing(&callbackInViewerMainLoopBeforeDrawing);
     viewerMain.setCallbackKeyEsc(&callbackAfterViewerMainLoop);
     
     viewerMain.addDataDisplayer(&dataDisplayerTableCubes);
+    viewerMain.addDataDisplayer(&dataDisplayerParticles);
 
     viewerMain.runMainLoop();
 

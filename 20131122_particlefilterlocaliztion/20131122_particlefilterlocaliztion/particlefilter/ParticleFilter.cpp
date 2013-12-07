@@ -1,3 +1,7 @@
+/* ---------------------------------------
+ * Code modified from Ian Kuo, 2013/12/7.
+ * --------------------------------------- */
+
 #include "ParticleFilter.h"
 #include <stdlib.h>
 #include <time.h>
@@ -82,9 +86,12 @@ void ParticleFilter::initialize(Scene* scene) {
 
 		int rMax = RAND_MAX;
 				
-		unsigned int x = (double) rand() / (RAND_MAX + 1) * _SceneSize[0] + 1;
-		unsigned int y = (double) rand() / (RAND_MAX + 1) * _SceneSize[1] + 1;
-		unsigned int z = 0;
+		//unsigned int x = (double) rand() / (RAND_MAX + 1) * _SceneSize[0] + 1;
+		//unsigned int y = (double) rand() / (RAND_MAX + 1) * _SceneSize[1] + 1;
+		//unsigned int z = 0;
+        double x = (double) rand() / (RAND_MAX + 1) * (_RangeOfScene[0] - _RangeOfScene[1]) + _RangeOfScene[1];
+        double y = (double) rand() / (RAND_MAX + 1) * (_RangeOfScene[2] - _RangeOfScene[3]) + _RangeOfScene[3];
+        double z = (double) rand() / (RAND_MAX + 1) * (_RangeOfScene[4] - _RangeOfScene[5]) + _RangeOfScene[5];
 
 		sample->position[0] = x;
 		sample->position[1] = y;
@@ -99,4 +106,16 @@ void ParticleFilter::initialize(Scene* scene) {
 
 		_NewSampleVec->push_back(sample);
 	}
+}
+
+vector<ParticleType*>* ParticleFilter::getNewSampleVec() {
+    return _NewSampleVec;
+}
+
+/* ---------------------------------------
+ * Private:
+ * --------------------------------------- */
+
+void ParticleFilter::update() {
+
 }

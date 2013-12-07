@@ -1,3 +1,7 @@
+/* ---------------------------------------
+ * Code modified from Ian Kuo, 2013/12/7.
+ * --------------------------------------- */
+
 #ifndef PARTICLEFILTER_PARTICLEFILTER_H
 #define PARTICLEFILTER_PARTICLEFILTER_H
 
@@ -7,7 +11,8 @@ using namespace std;
 class Scene;
 
 struct ParticleType	{
-	int			position[3];		// [x, y, z]
+	//int			position[3];		// [x, y, z]
+    double		position[3];
 	double		azimuth;
 	double 		elevation;
 	double		weight;
@@ -19,6 +24,7 @@ public:
     ParticleFilter(void);
     ~ParticleFilter(void);
     void initialize(Scene* scene);
+    vector<ParticleType*>* getNewSampleVec();
 
 private:
     void update();
