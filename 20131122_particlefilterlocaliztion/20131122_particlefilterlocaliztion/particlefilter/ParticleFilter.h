@@ -24,11 +24,10 @@ public:
     ParticleFilter(void);
     ~ParticleFilter(void);
     void initialize(Scene* scene);
+    void update();
     vector<ParticleType*>* getNewSampleVec();
 
 private:
-    void update();
-
     //Graphics^ g;
 	//Pen^ _skyBluePen;
 	//Pen^ _RedPen;

@@ -11,7 +11,7 @@ void DataDisplayerParticles::display() {
     // Get sample vector.
     sampleVec = particleFilter->getNewSampleVec();
 
-    double sizeHalf = 0.005;
+    double sizeHalf = 0.004;
     double sizeSceneX = 8;
     double sizeSceneY = 7;
     double x;

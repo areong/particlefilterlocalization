@@ -7,6 +7,8 @@
 #include <time.h>
 #include "../scene/Scene.h"
 
+#define M_PI       3.14159265358979323846
+
 ParticleFilter::ParticleFilter(void) {
 }
 
@@ -18,7 +20,8 @@ void ParticleFilter::initialize(Scene* scene) {
 
 	_sampleNum = 1000;
 	_threshold = 0.00000006;
-	_variance = 20;
+	//_variance = 20;
+    _variance = 0.4;
 
 	//_Length	= PBox->Width;
 	//_Width	= PBox->Height;
@@ -108,6 +111,152 @@ void ParticleFilter::initialize(Scene* scene) {
 	}
 }
 
+void ParticleFilter::update() {
+    //double *realObsrvLocation = _Proj->MapProjectToReal(e->Location.X, e->Location.Y);
+    double realObsrvLocation[2] = {0, 0};
+
+	//this->ObsrvNode->Location = e->Location;
+
+	//g->Clear(System::Drawing::Color::White);
+	//PBox->Refresh();
+
+	_OldSampleVec->clear();
+	_OldSampleVec = _NewSampleVec;
+	_NewSampleVec = new vector<ParticleType*>();
+				
+	/*
+	int obsrv_distFrwd = ObsrvNode->Location.X;
+	int obsrv_distBack = this->Height - obsrv_distFrwd;
+	int obsrv_distLeft = ObsrvNode->Location.Y;
+	int obsrv_distRight = this->Width - obsrv_distLeft;
+
+	int obsrv_Sum = obsrv_distFrwd + obsrv_distBack + obsrv_distLeft + obsrv_distRight;
+	*/
+
+	// Calculate the distance from a point to the scene along a line.
+	// Parameters:
+	//  1-3: Point's x,y,z coordinates.
+	//  4-6: Line's direction vector. Not being a unit vector is okay.
+	// Return:
+	//  The distance. Unit is meter.
+	//  Returns -1 if point out of range.
+    double obsrv_x_pos = (*sceneMain).calcDistanceFromPointAlongLine(realObsrvLocation[0], realObsrvLocation[1], 0, 1, 0, 0);
+    double obsrv_y_pos = (*sceneMain).calcDistanceFromPointAlongLine(realObsrvLocation[0], realObsrvLocation[1], 0, 0, 1, 0);
+	//double obsrv_Sum = (*sceneMain).calcDistanceFromPointAlongLine(realObsrvLocation[0], realObsrvLocation[1], 0, 0, 0, 0);
+    double obsrv_Sum = obsrv_x_pos + obsrv_y_pos;
+
+	double normalFactor = 0;
+
+	// Calcute the weight to prepare sampling
+	for (int i = 0; i < _OldSampleVec->size(); i++)
+	{
+		ParticleType* sample = (*_OldSampleVec)[i];
+
+		/*
+		int smpl_distFrwd = sample->position[0];
+		int smpl_distBack = this->Height - smpl_distFrwd;
+		int smpl_distLeft = sample->position[1];
+		int smpl_distRight = this->Width - smpl_distLeft;
+
+		int smpl_Sum = smpl_distFrwd + smpl_distBack + smpl_distLeft + smpl_distRight;
+
+		double diffFrwd = pow((double)smpl_distFrwd - obsrv_distFrwd, 2);
+		double diffBack = pow((double)smpl_distBack - obsrv_distBack, 2);
+		double diffLeft = pow((double)smpl_distLeft - obsrv_distLeft, 2);
+		double diffRight = pow((double)smpl_distRight - obsrv_distRight, 2);
+
+		double diff = diffFrwd + diffBack + diffLeft + diffRight;
+		*/
+
+        double smpl_x_pos = (*sceneMain).calcDistanceFromPointAlongLine(sample->position[0], sample->position[1], sample->position[2], 1, 0, 0);
+        double smpl_y_pos = (*sceneMain).calcDistanceFromPointAlongLine(sample->position[0], sample->position[1], sample->position[2], 0, 1, 0);
+		//double smpl_Sum = (*sceneMain).calcDistanceFromPointAlongLine(sample->position[0], sample->position[1], sample->position[2], sample->azimuth, sample->elevation, 0);
+        double smpl_Sum = smpl_x_pos + smpl_y_pos;
+
+		double diff = pow((double)smpl_Sum - obsrv_Sum, 2);
+
+		double P_fromXtoY = 1.0 / (diff + 1);
+
+		sample->weight = P_fromXtoY * 1;
+
+		normalFactor += sample->weight;
+	}
+
+	double mean = normalFactor / _OldSampleVec->size();
+	double var = 0;
+	for (int i = 0; i < _OldSampleVec->size(); i++)
+	{
+		var += pow((*_OldSampleVec)[i]->weight - mean, 2);
+	}
+	var /= _OldSampleVec->size();
+	double stdDev = sqrt(var);
+	_threshold = mean + stdDev;
+
+	normalFactor = 0;
+	for (int i = 0; i < _OldSampleVec->size(); i++)
+	{
+		ParticleType* sample = (*_OldSampleVec)[i];
+		if (sample->weight < _threshold)
+		sample->weight = 0;
+		normalFactor += sample->weight;
+	}
+
+	// Normalize the weight
+	for (int i = 0; i < _OldSampleVec->size(); i++)
+	{
+		ParticleType* sample = (*_OldSampleVec)[i];
+		sample->weight /= normalFactor;
+	}
+
+	// Sampling with Gaussian distribution 
+	for (int i = 0; i < _OldSampleVec->size(); i++)
+	{
+		ParticleType* sample = (*_OldSampleVec)[i];
+					 
+		int gen_smpl_num = _sampleNum * sample->weight;
+
+		if (gen_smpl_num == 0) continue;
+
+		int num = 0; 
+					 
+		//double* mapPos = _Proj->RealProjectToMap(sample->position[0], sample->position[1]);
+
+		//g->DrawRectangle(_RedPen, mapPos[0], mapPos[1], 1, 1);
+
+		while (num < gen_smpl_num)
+		{
+			ParticleType* newSmpl = new ParticleType();
+						 
+			double u = 0;
+			double v = 0;
+
+			while (u == 0 || v == 0)
+			{
+			u = (double) rand() / (RAND_MAX + 1);
+			v = (double) rand() / (RAND_MAX + 1);
+			}
+			double x = sqrt(-2 * log(u)) * cos(2 * M_PI * v) * _variance + sample->position[0];
+			double y = sqrt(-2 * log(u)) * sin(2 * M_PI * v) * _variance + sample->position[1];
+			double z = sqrt(-2 * log(u)) * sin(2 * M_PI * v) * _variance + sample->position[2];;
+
+			newSmpl->position[0] = x;
+			newSmpl->position[1] = y;
+			newSmpl->position[2] = z;
+			newSmpl->azimuth = 0;
+			newSmpl->elevation = 0;
+			newSmpl->oldweight = sample->weight;
+			_NewSampleVec->push_back(newSmpl);
+
+			//mapPos = _Proj->RealProjectToMap(sample->position[0], sample->position[1]);
+
+			//g->DrawRectangle(_skyBluePen, mapPos[0], mapPos[1], 1, 1);
+			num++;
+		}
+	}
+
+	//PBox->Refresh();
+}
+
 vector<ParticleType*>* ParticleFilter::getNewSampleVec() {
     return _NewSampleVec;
 }
@@ -115,7 +264,3 @@ vector<ParticleType*>* ParticleFilter::getNewSampleVec() {
 /* ---------------------------------------
  * Private:
  * --------------------------------------- */
-
-void ParticleFilter::update() {
-
-}
