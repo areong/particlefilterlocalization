@@ -102,7 +102,7 @@ int main(int argc, char** argv) {
 }
 
 void callbackInViewerMainLoopBeforeDrawing() {
-    //cout << "In glutMainLoop() before drawing." << endl;
+    cout << "particleFilter.update();" << endl;
     particleFilter.update();
 }
 
