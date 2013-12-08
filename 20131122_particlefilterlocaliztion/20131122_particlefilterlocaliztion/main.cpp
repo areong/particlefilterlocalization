@@ -41,7 +41,9 @@ int main(int argc, char** argv) {
     // Return:
     //  The distance. Unit is meter.
     //  Returns -1 if point out of range.
-    double distance = sceneMain.calcDistanceFromPointAlongLine(-1, 0, 0, -0.5, 0.5, 1);
+    double distance = sceneMain.calcDistanceFromPointAlongLine(0, 0, 0, 1, 0, 0);
+    cout << distance << endl;
+    distance = sceneMain.calcDistanceFromPointAlongLine(0, 0, 0, 0, 1, 0);
     cout << distance << endl;
 
     // Get the range of scene.
@@ -102,7 +104,7 @@ int main(int argc, char** argv) {
 }
 
 void callbackInViewerMainLoopBeforeDrawing() {
-    cout << "particleFilter.update();" << endl;
+    //cout << "particleFilter.update();" << endl;
     particleFilter.update();
 }
 

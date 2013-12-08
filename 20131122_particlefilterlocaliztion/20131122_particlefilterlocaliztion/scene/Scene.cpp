@@ -430,8 +430,9 @@ double Scene::distanceToNearestPointTouchingTheLineInACube(int indexCube,
     // Search every points in the cube.
     // If a point's distance to the line is closer than the distanceDefiningPointTouchesLine,
     // return the distance from thus stop searching.
-    double distanceToReturn = -1;
-    double distanceTemp;
+    bool noPointTouchesLine = true;
+    double distanceToReturn = 1e8;
+    double distanceOrtho;
     double xStartToPointi;
     double yStartToPointi;
     double zStartToPointi;
@@ -460,21 +461,30 @@ double Scene::distanceToNearestPointTouchingTheLineInACube(int indexCube,
                                    yStartToPointi * yStartToPointi +
                                    zStartToPointi * zStartToPointi);
         if (lengthStartToPointi <= distanceDefiningPointTouchesLine) {
-            distanceToReturn = lengthStartToPointi;
-            break;
+            // If it is shorter, store it.
+            if (lengthStartToPointi < distanceToReturn) {
+                distanceToReturn = lengthStartToPointi;
+                noPointTouchesLine = false;
+                continue;
+            }
         }
 
         // Calculate distanceToReturn = lengthLine * sinTheta.
         cosTheta /= lengthStartToPointi * lengthLine;
         sinTheta = sqrt(1 - cosTheta * cosTheta);
-        distanceTemp = lengthLine * sinTheta;
+        distanceOrtho = lengthLine * sinTheta;
 
-        // If distanceToReturn is small enough, it's what we want.
-        if (distanceTemp <= distanceDefiningPointTouchesLine) {
-            distanceToReturn = lengthStartToPointi;
-            break;
+        // If lengthStartToPointi is small enough, it's what we want.
+        if (distanceOrtho <= distanceDefiningPointTouchesLine) {
+            if (lengthStartToPointi < distanceToReturn) {
+                distanceToReturn = lengthStartToPointi;
+                noPointTouchesLine = false;
+            }
         }
     }
 
-    return distanceToReturn;
+    if (noPointTouchesLine)
+        return -1;
+    else
+        return distanceToReturn;
 }
