@@ -63,15 +63,21 @@ int main(int argc, char** argv) {
     // CAUTION: DO NOT CHANGE THE CONTENT OF IT!
     double **tableCubes = sceneMain.getTableCubes();
 
+    int indexCube = sceneMain.XYZtoIndexOfCube(-3,-1,4);
+    cout << indexCube << endl;
+
     // Get number of points of each cube.
     // Return:
     //  A integer array. The index is the same as the cube.
     // CAUTION: DO NOT CHANGE THE CONTENT OF IT!
     int *numPointsEachCube = sceneMain.getNumPointsEachCube();
-    if (numPointsEachCube[0] > 0)
-        cout << tableCubes[0][0] << '\t'<< tableCubes[0][1] << '\t' << tableCubes[0][2] << endl;
+    //int indexCube = 0;
+    if (numPointsEachCube[indexCube] > 0) {
+        cout << numPointsEachCube[indexCube] << endl;
+        cout << tableCubes[indexCube][0] << '\t'<< tableCubes[indexCube][1] << '\t' << tableCubes[indexCube][2] << endl;
+    }
     else
-        cout << "No point in cube no.0." << endl;
+        cout << "No point in cube no. " << indexCube << endl;
 
     
     //camera.initialize();

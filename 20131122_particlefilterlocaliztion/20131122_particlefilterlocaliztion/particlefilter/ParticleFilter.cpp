@@ -115,7 +115,7 @@ void ParticleFilter::initialize(Scene* scene) {
 
 void ParticleFilter::update() {
     //double *realObsrvLocation = _Proj->MapProjectToReal(e->Location.X, e->Location.Y);
-    double realObsrvLocation[2] = {-1, -1};
+    double realObsrvLocation[2] = {-3, -1};
 
     //this->ObsrvNode->Location = e->Location;
 

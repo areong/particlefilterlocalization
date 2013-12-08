@@ -55,9 +55,9 @@ void Scene::setDistanceDefiningPointTouchesLine(double distance) {
  * ---------------------------------------------------  */
 int Scene::XYZtoIndexOfCube(double x, double y, double z) {
     // Check out of range.
-    if (x > dRangeOfScene[0] || x < dRangeOfScene[1] ||
-        y > dRangeOfScene[2] || y < dRangeOfScene[3] ||
-        z > dRangeOfScene[4] || z < dRangeOfScene[5] )
+    if (x >= dRangeOfScene[0] || x <= dRangeOfScene[1] ||
+        y >= dRangeOfScene[2] || y <= dRangeOfScene[3] ||
+        z >= dRangeOfScene[4] || z <= dRangeOfScene[5] )
         return -1;
 
     // Calculate index.
@@ -279,7 +279,7 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
         // Set new lengthLine.
         lengthLine = lengthCubeEdge / yLine*-1;
     }
-    else if (xLine >  0 && xLine    >= abs(xLine) && xLine    >= abs(yLine)) {
+    else if (zLine >  0 && xLine    >= abs(xLine) && xLine    >= abs(yLine)) {
         // Use  y and -x vector with length of lengthCubeEdge.
         vector1ToSurroundPoint[0] = 0;
         vector1ToSurroundPoint[1] = lengthCubeEdge;
@@ -291,7 +291,7 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
         // Set new lengthLine.
         lengthLine = lengthCubeEdge / zLine;
     }
-    else if (xLine <  0 && xLine*-1 >= abs(xLine) && xLine*-1 >= abs(yLine)) {
+    else if (zLine <  0 && xLine*-1 >= abs(xLine) && xLine*-1 >= abs(yLine)) {
         // Use  y and  x vector with length of lengthCubeEdge.
         vector1ToSurroundPoint[0] = 0;
         vector1ToSurroundPoint[1] = lengthCubeEdge;
@@ -319,6 +319,8 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
     //  >: vector1ToSurroundPoint
     //  ^: vector2ToSurroundPoint
     double pointsOfNine[27];
+    for (int i = 0; i < 27; i++)
+        pointsOfNine[i] = 0;
     // point 0
     pointsOfNine[ 0] = xStart;
     pointsOfNine[ 1] = yStart;
@@ -418,7 +420,7 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
     //    return lengthLine * (numOfTimeWhileLoop - 1);
     // If not found, return a big value.
     else
-        return 1e8;
+        return 100;
 }
 
 /* ---------------------------------------------
