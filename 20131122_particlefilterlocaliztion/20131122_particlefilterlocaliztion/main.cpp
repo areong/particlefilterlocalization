@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <iostream>
+#include "cellphonefunc/CellphoneFunc.h"
 #include "opennicamera/OpenniCamera.h"
 #include "particlefilter/ParticleFilter.h"
 #include "scene/Scene.h"
@@ -19,8 +20,12 @@ Scene sceneMain;
 
 ParticleFilter particleFilter;
 
+CellphoneFunc cpf;
+
 int main(int argc, char** argv) {
-     
+    
+    // Connect to an Android device.
+    cpf.connectAndReceiveData();
 
     // Initialize.
     // Parameters:
@@ -110,6 +115,10 @@ int main(int argc, char** argv) {
 }
 
 void callbackInViewerMainLoopBeforeDrawing() {
+    cout << "Azimuth: " << cpf.getAzimuth() << endl
+         << "  Pitch: " << cpf.getPitch() << endl
+         << "   Roll: " << cpf.getRoll() << endl;
+
     //cout << "particleFilter.update();" << endl;
     particleFilter.update();
 }
