@@ -45,3 +45,29 @@ void Orientation::set_orientation( const float azi, const float pit, const float
     _pitch   = pit;
     _roll    = rol;
 }
+
+void Orientation::get_direction_x(double *direction) {
+    direction[0] = cos( degreeToRadian(_azimuth) ) * sin( degreeToRadian(_pitch) ) * sin( degreeToRadian(_roll) )
+                 - sin( degreeToRadian(_azimuth) ) * cos( degreeToRadian(_roll ) );
+    direction[1] = sin( degreeToRadian(_azimuth) ) * sin( degreeToRadian(_pitch) ) * sin( degreeToRadian(_roll) )
+                 + cos( degreeToRadian(_azimuth) ) * cos( degreeToRadian(_roll ) );
+    direction[2] = cos( degreeToRadian(_pitch  ) ) * sin( degreeToRadian(_roll ) );
+}
+
+void Orientation::get_direction_y(double *direction) {
+    direction[0] = cos( degreeToRadian(_azimuth) ) * cos( degreeToRadian(_pitch) );
+    direction[1] = sin( degreeToRadian(_azimuth) ) * cos( degreeToRadian(_pitch) );
+    direction[2] = sin( (-1) * degreeToRadian(_pitch) );
+}
+
+void Orientation::get_direction_z(double *direction) {
+    direction[0] = cos( degreeToRadian(_azimuth) ) * sin( degreeToRadian(_pitch) ) * cos( degreeToRadian(_roll) )
+                 + sin( degreeToRadian(_azimuth) ) * sin( degreeToRadian(_roll ) );
+    direction[1] = sin( degreeToRadian(_azimuth) ) * sin( degreeToRadian(_pitch) ) * cos( degreeToRadian(_roll) )
+                 + cos( degreeToRadian(_azimuth) ) * sin( degreeToRadian(_roll ) );
+    direction[2] = cos( degreeToRadian(_pitch  ) ) * cos( degreeToRadian(_roll ) );
+}
+
+double Orientation::degreeToRadian(float degree) {
+    return degree * (float)PI / 180;
+}

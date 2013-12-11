@@ -10,6 +10,10 @@ public:
     float getPitch();
     float getRoll();
     Vector3d getDirection();
+    void getDirectionX(double *directionX);
+    void getDirectionY(double *directionY);
+    void getDirectionZ(double *directionZ);
+
 private:
     static bool startConnection();
     static string exec(char* cmd);

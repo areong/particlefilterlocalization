@@ -18,6 +18,12 @@ public:
     
     static void set_orientation( const float azi, const float pit, const float rol );
 
+    static void get_direction_x(double *direction);
+    static void get_direction_y(double *direction);
+    static void get_direction_z(double *direction);
+
+    static double degreeToRadian(float degree);
+
 private:
     static float _azimuth ;    
     static float _pitch ; 

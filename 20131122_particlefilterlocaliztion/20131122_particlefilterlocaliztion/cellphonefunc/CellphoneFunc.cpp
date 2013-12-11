@@ -40,6 +40,18 @@ Vector3d CellphoneFunc::getDirection() {
     return v3d;
 }
 
+void CellphoneFunc::getDirectionX(double *directionX) {
+    Orientation::get_direction_x(directionX);
+}
+
+void CellphoneFunc::getDirectionY(double *directionY) {
+    Orientation::get_direction_y(directionY);
+}
+
+void CellphoneFunc::getDirectionZ(double *directionZ) {
+    Orientation::get_direction_z(directionZ);
+}
+
 /* -------------------------------------------------------
  * Private:
  * -------------------------------------------------------  */
