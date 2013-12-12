@@ -22,6 +22,7 @@ private:
            R31, R32, R33;
 
     double degreeToRadian(double degree);
+    double calcLengthVector(double x, double y, double z);
 };
 
 #endif

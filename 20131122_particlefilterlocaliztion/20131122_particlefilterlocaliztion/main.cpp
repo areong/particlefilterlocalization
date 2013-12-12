@@ -18,6 +18,8 @@ Scene sceneMain;
 
 // Create OpenniCamera object.
 OpenniCamera camera;
+double *samplingVectorsCamera;
+double samplingVectorsWorld[3];
 
 ParticleFilter particleFilter;
 
@@ -97,12 +99,12 @@ int main(int argc, char** argv) {
 
     
     camera.initialize();
-    int numSamplingPointsW = 3;
-    int numSamplingPointsH = 3;
+    int numSamplingPointsW = 1;
+    int numSamplingPointsH = 1;
     camera.setSamplingMethod(SAMPLING_GRID, numSamplingPointsW, numSamplingPointsH);
     camera.takeNewDepthPhoto();
     //int *photo = camera.getDepthPhoto();
-    double *samplingVectorsCamera = camera.getSamplingVectors();
+    samplingVectorsCamera = camera.getSamplingVectors();
     for (int i = 0; i < numSamplingPointsW * numSamplingPointsH; i++) {
         cout << samplingVectorsCamera[i * 3    ] << ",\t" <<
                 samplingVectorsCamera[i * 3 + 1] << ",\t" <<
@@ -143,6 +145,7 @@ void callbackInViewerMainLoopBeforeDrawing() {
     vectorRotator.fromPhoneToWorld(vectorX, directionPhoneX, 1);
     vectorRotator.fromPhoneToWorld(vectorY, directionPhoneY, 1);
     vectorRotator.fromPhoneToWorld(vectorZ, directionPhoneZ, 1);
+    vectorRotator.fromCameraToWorld(samplingVectorsCamera, samplingVectorsWorld, 1);
 
     //cpf.getDirectionX(directionPhoneX);
     //cpf.getDirectionY(directionPhoneY);
@@ -157,6 +160,9 @@ void callbackInViewerMainLoopBeforeDrawing() {
     //cout << "z = ( " << directionPhoneZ[0] << "\t, "
     //                 << directionPhoneZ[1] << "\t, "
     //                 << directionPhoneZ[2] << " )" << endl;
+    cout << samplingVectorsWorld[0] << "\t, " <<
+            samplingVectorsWorld[1] << "\t, " <<
+            samplingVectorsWorld[2] << endl;
 
     //cout << "particleFilter.update();" << endl;
     particleFilter.update();
