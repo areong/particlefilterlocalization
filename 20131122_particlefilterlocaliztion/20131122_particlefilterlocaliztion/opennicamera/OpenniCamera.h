@@ -19,7 +19,7 @@ public:
     void setSamplingMethod(SamplingMethod method, int arga, int argb);
     void takeNewDepthPhoto();
     int *getDepthPhoto();
-    int *getDepthPhotoSampled();
+    double *getDepthPhotoSampled();
     double *getSamplingVectors();
 
 private:
@@ -29,12 +29,13 @@ private:
     int widthFrame;
     int heightFrame;
     DepthPixel *depthPhoto;
-    int *depthPhotoSampled;
+    double *depthPhotoSampled; // Unit is meter.
 
     int samplingMethod;
     int samplingArgA;
     int samplingArgB;
-    //int *samplingIndicesOfPhoto;
+    int numSamplePoints;
+    int *samplingIndicesOfPhoto;
     int *samplingPointsXYOnPhoto;
     double *samplingVectors;
 
@@ -42,7 +43,6 @@ private:
     void calcSamplingIndicesByGrid();
     void calcSamplingVectorsByGrid();
     int convertIntXYToIndexOfPhotoArray(int x, int y);
-    void sampleTheDepthPhoto();
 };
 
 #endif

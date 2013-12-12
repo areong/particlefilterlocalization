@@ -18,8 +18,11 @@ Scene sceneMain;
 
 // Create OpenniCamera object.
 OpenniCamera camera;
+int numSamplingPointsW = 1;
+int numSamplingPointsH = 1;
 double *samplingVectorsCamera;
 double samplingVectorsWorld[3];
+double *depthPhotoSampled;
 
 ParticleFilter particleFilter;
 
@@ -99,21 +102,19 @@ int main(int argc, char** argv) {
 
     // VectorRotator
     // Set offset 90 degrees, which makes no need to rotate model manually.
-    vectorRotator.setPhoneAngleZOffset(90);
+    vectorRotator.setPhoneAngleZOffset(-90);
 
     // Camera
     camera.initialize();
-    int numSamplingPointsW = 1;
-    int numSamplingPointsH = 1;
     camera.setSamplingMethod(SAMPLING_GRID, numSamplingPointsW, numSamplingPointsH);
     camera.takeNewDepthPhoto();
     //int *photo = camera.getDepthPhoto();
     samplingVectorsCamera = camera.getSamplingVectors();
-    for (int i = 0; i < numSamplingPointsW * numSamplingPointsH; i++) {
-        cout << samplingVectorsCamera[i * 3    ] << ",\t" <<
-                samplingVectorsCamera[i * 3 + 1] << ",\t" <<
-                samplingVectorsCamera[i * 3 + 2] << endl;
-    }
+    //for (int i = 0; i < numSamplingPointsW * numSamplingPointsH; i++) {
+    //    cout << samplingVectorsCamera[i * 3    ] << ",\t" <<
+    //            samplingVectorsCamera[i * 3 + 1] << ",\t" <<
+    //            samplingVectorsCamera[i * 3 + 2] << endl;
+    //}
 
     particleFilter.initialize(&sceneMain);
     
@@ -146,9 +147,9 @@ void callbackInViewerMainLoopBeforeDrawing() {
 
     vectorRotator.setPhoneAngles(cpf.getPitch(), cpf.getRoll(), cpf.getAzimuth());
     
-    vectorRotator.fromPhoneToWorld(vectorX, directionPhoneX, 1);
-    vectorRotator.fromPhoneToWorld(vectorY, directionPhoneY, 1);
-    vectorRotator.fromPhoneToWorld(vectorZ, directionPhoneZ, 1);
+    //vectorRotator.fromPhoneToWorld(vectorX, directionPhoneX, 1);
+    //vectorRotator.fromPhoneToWorld(vectorY, directionPhoneY, 1);
+    //vectorRotator.fromPhoneToWorld(vectorZ, directionPhoneZ, 1);
     vectorRotator.fromCameraToWorld(samplingVectorsCamera, samplingVectorsWorld, 1);
 
     //cpf.getDirectionX(directionPhoneX);
@@ -167,6 +168,18 @@ void callbackInViewerMainLoopBeforeDrawing() {
     cout << samplingVectorsWorld[0] << "\t, " <<
             samplingVectorsWorld[1] << "\t, " <<
             samplingVectorsWorld[2] << endl;
+
+    camera.takeNewDepthPhoto();
+    depthPhotoSampled = camera.getDepthPhotoSampled();
+    //cout << depthPhotoSampled[0] << endl;
+    
+    double result;
+    result = sceneMain.takeAShotAndEvaluate(0, 0, 0,
+                                            samplingVectorsWorld,
+                                            numSamplingPointsW * numSamplingPointsH,
+                                            depthPhotoSampled);
+
+    cout << result << endl;
 
     //cout << "particleFilter.update();" << endl;
     particleFilter.update();

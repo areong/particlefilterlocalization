@@ -6,9 +6,9 @@ public:
     Scene(void);
     ~Scene(void);
     int initialize(char *fileScene, double lengthCubeEdge);
-    double takeAShot(double xPoint, double yPoint, double zPoint, 
-                     double xFront, double yFront, double zFront,
-                     double xTop,   double yTop,   double zTop);
+    double takeAShotAndEvaluate(double xPoint, double yPoint, double zPoint, 
+                                double *samplingVectors, int numSamplingVectors,
+                                double *testingSet);
     double calcDistanceFromPointAlongLine(double xStart, double yStart, double zStart, 
                                           double xLine, double yLine, double zLine);
     void setDistanceDefiningPointTouchesLine(double distance);

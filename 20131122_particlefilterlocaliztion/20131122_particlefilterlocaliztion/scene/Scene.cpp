@@ -33,10 +33,26 @@ int Scene::initialize(char *fileScene, double lengthCubeEdge) {
     return 0;
 }
 
-double Scene::takeAShot(double xPoint, double yPoint, double zPoint, 
-                        double xFront, double yFront, double zFront,
-                        double xTop,   double yTop,   double zTop) {
-    return distanceToNearestPointTouchingTheLine(xPoint, yPoint, zPoint, xFront, yFront, zFront);
+/* -------------------------------------------------------------
+ * Scene::takeAShotAndEvaluate
+ * Take a shot according to sampling vectors, than evaluate
+ * on testing set, which is taken by camera.
+ * -------------------------------------------------------------  */
+double Scene::takeAShotAndEvaluate(double xPoint, double yPoint, double zPoint,
+                                   double *samplingVectors, int numSamplingVectors,
+                                   double *testingSet) {
+    // Calculate distances on each vectors.
+    double *distancesSampling = new double[numSamplingVectors];
+    double result = 0;
+    for (int i = 0; i < numSamplingVectors; i++) {
+        distancesSampling[i] = distanceToNearestPointTouchingTheLine(xPoint, yPoint, zPoint,
+                                                                   samplingVectors[i*3  ],
+                                                                   samplingVectors[i*3+1],
+                                                                   samplingVectors[i*3+2]);
+        // Calculate root mean square.
+        result += (testingSet[i] - distancesSampling[i]) * (testingSet[i] - distancesSampling[i]);
+    }
+    return sqrt(result);
 }
 
 double Scene::calcDistanceFromPointAlongLine(double xPoint, double yPoint, double zPoint, 
