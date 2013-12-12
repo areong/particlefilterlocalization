@@ -6,6 +6,7 @@ public:
     VectorRotator(void);
     ~VectorRotator(void);
     void setPhoneAngles(double angleX, double angleY, double angleZ);
+    void setPhoneAngleZOffset(double offset);
     void fromCameraToWorld(const double *vectorsIn, double *vectorsOut, int numVectors);
     void fromCameraToPhone(const double *vectorsIn, double *vectorsOut, int numVectors);
     void fromPhoneToWorld(const double *vectorsIn, double *vectorsOut, int numVectors);
@@ -15,6 +16,7 @@ private:
     double angleX;
     double angleY;
     double angleZ;
+    double angleZOffset;
 
     // Rotation matrix
     double R11, R12, R13,

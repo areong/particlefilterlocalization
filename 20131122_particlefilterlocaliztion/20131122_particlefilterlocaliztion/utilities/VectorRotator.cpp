@@ -8,6 +8,7 @@ VectorRotator::VectorRotator(void) {
     angleX = 0;
     angleY = 0;
     angleZ = 0;
+    angleZOffset = 0;
     R11 = 0;
     R21 = 0;
     R31 = 0;
@@ -25,7 +26,7 @@ VectorRotator::~VectorRotator(void) {
 void VectorRotator::setPhoneAngles(double angleXIn, double angleYIn, double angleZIn) {
     angleX = degreeToRadian( angleXIn );
     angleY = degreeToRadian( angleYIn );
-    angleZ = degreeToRadian( angleZIn );
+    angleZ = degreeToRadian( angleZIn + angleZOffset );
 
     // Compute rotation matrix.
     // Ref: http://planning.cs.uiuc.edu/node102.html
@@ -44,6 +45,10 @@ void VectorRotator::setPhoneAngles(double angleXIn, double angleYIn, double angl
     R23 = sin( angleZ ) * sin( angleY ) * cos( angleX ) * 1
         + cos( angleZ ) * sin( angleX ) * 1;
     R33 = cos( angleY ) * cos( angleX ) * 1;
+}
+
+void VectorRotator::setPhoneAngleZOffset(double offset) {
+    angleZOffset = offset;
 }
 
 void VectorRotator::fromCameraToWorld(const double *vectorsIn, double *vectorsOut, int numVectors) {

@@ -97,7 +97,11 @@ int main(int argc, char** argv) {
     else
         cout << "No point in cube no. " << indexCube << endl;
 
-    
+    // VectorRotator
+    // Set offset 90 degrees, which makes no need to rotate model manually.
+    vectorRotator.setPhoneAngleZOffset(90);
+
+    // Camera
     camera.initialize();
     int numSamplingPointsW = 1;
     int numSamplingPointsH = 1;
