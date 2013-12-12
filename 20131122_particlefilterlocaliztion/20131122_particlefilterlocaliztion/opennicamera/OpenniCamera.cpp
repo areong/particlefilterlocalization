@@ -18,6 +18,9 @@ int OpenniCamera::initialize() {
     // Create a depth video stream from device.
     videoStreamDepth.create(device, SENSOR_DEPTH);
 
+    // Enable mirroring to match right hand coordinates.
+    videoStreamDepth.setMirroringEnabled(true);
+
     // Start streaming.
     videoStreamDepth.start();
 
@@ -61,6 +64,7 @@ void OpenniCamera::setSamplingMethod(SamplingMethod method, int arga, int argb) 
     switch (samplingMethod) {
     case SAMPLING_GRID:
         calcSamplingIndicesByGrid();
+        calcSamplingVectorsByGrid();
         break;
     case SAMPLING_GRID_RANDOM:
         break;
@@ -71,8 +75,7 @@ void OpenniCamera::setSamplingMethod(SamplingMethod method, int arga, int argb) 
     }
 }
 
-void OpenniCamera::takeNewDepthPhoto(double xFront, double yFront, double zFront, 
-                                     double xTop, double yTop, double zTop) {
+void OpenniCamera::takeNewDepthPhoto() {
     // Get a frame referenced by mVideoFrameRef.
     videoStreamDepth.readFrame(&videoFrameRefDepth);
 
@@ -98,6 +101,10 @@ int *OpenniCamera::getDepthPhoto() {
     return convertDepthPixelArrayToIntArray(depthPhoto, widthFrame * heightFrame);
 }
 
+double *OpenniCamera::getSamplingVectors() {
+    return samplingVectors;
+}
+
 /* --------------------------------
  * Private
  * -------------------------------- */
@@ -117,6 +124,7 @@ int *OpenniCamera::convertDepthPixelArrayToIntArray(const DepthPixel* depthPixel
 
 /* ------------------------------------------------
  * calcSamplingIndicesByGrid
+ * Called by OpenniCamera::setSamplingMethod.
  * Sample points sit at the center of each rectangular.
  * ------------------------------------------------ */
 void OpenniCamera::calcSamplingIndicesByGrid() {
@@ -128,28 +136,49 @@ void OpenniCamera::calcSamplingIndicesByGrid() {
     double halfHeightGrid = ((double)heightFrame / (double)samplingArgB) / 2.0;
 
     // Create int array samplingIndicesOfPhoto.
-    samplingIndicesOfPhoto = new int[samplingArgA * samplingArgB];
+    //samplingIndicesOfPhoto = new int[samplingArgA * samplingArgB];
+    samplingPointsXYOnPhoto = new int[samplingArgA * samplingArgB * 2];
+
 
     // Fill in the array.
     for (int ih = 0; ih < samplingArgB; ih++)
         for (int iw = 0; iw < samplingArgA; iw++) {
-            int x = (1 + 2 * iw) * (int)halfWidthGrid;
-            int y = (1 + 2 * ih) * (int)halfHeightGrid;
-            int indexPhotoArray = convertIntXYToIndexOfPhotoArray(x, y);
-            samplingIndicesOfPhoto[ indexSample ] = indexPhotoArray;
-            cout << indexSample << '\t' << samplingIndicesOfPhoto[ indexSample ] << endl;
+            //int x = (1 + 2 * iw) * (int)halfWidthGrid;
+            //int y = (1 + 2 * ih) * (int)halfHeightGrid;
+            //int indexPhotoArray = convertIntXYToIndexOfPhotoArray(x, y);
+            //samplingIndicesOfPhoto[ indexSample ] = indexPhotoArray;
+            //cout << indexSample << '\t' << samplingIndicesOfPhoto[ indexSample ] << endl;
+            // Calculate x and y.
+            samplingPointsXYOnPhoto[indexSample*2    ] = (1 + 2 * iw) * (int)halfWidthGrid;
+            samplingPointsXYOnPhoto[indexSample*2 + 1] = (1 + 2 * ih) * (int)halfHeightGrid;
             indexSample++;
         }
 }
 
 /* ------------------------------------------------
  * calcSamplingVectorsByGrid
- * calcSamplingIndicesByGrid() should have been called,
+ * Called by OpenniCamera::setSamplingMethod.
+ * OpenniCamera::calcSamplingIndicesByGrid() should have been called,
  * because this method uses the array samplingIndicesOfPhoto.
  * ------------------------------------------------ */
-void OpenniCamera::calcSamplingVectorsByGrid(double xFront, double yFront, double zFront, 
-                                             double xTop, double yTop, double zTop) {
-
+void OpenniCamera::calcSamplingVectorsByGrid() {
+    int numPoints = samplingArgA * samplingArgB;
+    float *vectorsTemp = new float[numPoints * 3];
+    samplingVectors = new double[numPoints * 3];
+    // Convert each sampling point.
+    for (int i = 0; i < numPoints; i++) {
+        CoordinateConverter::convertDepthToWorld(videoStreamDepth,
+                                                 samplingPointsXYOnPhoto[i * 2    ],
+                                                 samplingPointsXYOnPhoto[i * 2 + 1],
+                                                 100,
+                                                 &vectorsTemp[i * 3    ],
+                                                 &vectorsTemp[i * 3 + 1],
+                                                 &vectorsTemp[i * 3 + 2]);
+        // Copy to double array.
+        samplingVectors[i * 3    ] = (double)vectorsTemp[i * 3    ];
+        samplingVectors[i * 3 + 1] = (double)vectorsTemp[i * 3 + 1];
+        samplingVectors[i * 3 + 2] = (double)vectorsTemp[i * 3 + 2];
+    }
 }
 
 int OpenniCamera::convertIntXYToIndexOfPhotoArray(int x, int y) {

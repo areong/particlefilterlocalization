@@ -17,12 +17,10 @@ public:
     int initialize();
     void shutdown();
     void setSamplingMethod(SamplingMethod method, int arga, int argb);
-    void takeNewDepthPhoto(double xFront, double yFront, double zFront, 
-                           double xTop, double yTop, double zTop);
+    void takeNewDepthPhoto();
     int *getDepthPhoto();
     int *getDepthPhotoSampled();
-    double *getSamplingVectorsCameraCoordinates();
-    double *getSamplingVectorsRealWorldCoordinates();
+    double *getSamplingVectors();
 
 private:
     Device device;
@@ -36,15 +34,13 @@ private:
     int samplingMethod;
     int samplingArgA;
     int samplingArgB;
-    int *samplingIndicesOfPhoto;
-
-    double *samplingVectorsCameraCoordinates;
-    double *samplingVectorsRealWorldCoordinates;
+    //int *samplingIndicesOfPhoto;
+    int *samplingPointsXYOnPhoto;
+    double *samplingVectors;
 
     int *convertDepthPixelArrayToIntArray(const DepthPixel* depthPixelArray, int length);
     void calcSamplingIndicesByGrid();
-    void calcSamplingVectorsByGrid(double xFront, double yFront, double zFront, 
-                                   double xTop, double yTop, double zTop);
+    void calcSamplingVectorsByGrid();
     int convertIntXYToIndexOfPhotoArray(int x, int y);
     void sampleTheDepthPhoto();
 };

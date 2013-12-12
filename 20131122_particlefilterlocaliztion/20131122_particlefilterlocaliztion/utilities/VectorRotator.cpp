@@ -56,15 +56,15 @@ void VectorRotator::fromCameraToWorld(const double *vectorsIn, double *vectorsOu
 /* ----------------------------------------------------------------------
  * VectorRotator::fromCameraToPhone
  * Camera coordinates:
- *      Left hand coordinates. Viewing along camera's front direction,
+ *      Right hand coordinates(mirroring enabled). Viewing along camera's front direction,
  *          X points to right, Y points to top, Z points to front.
  * Phone coordinates(Android):
- *     Right hand coordinates. Viewing at screen of phone,
+ *      Right hand coordinates. Viewing at screen of phone,
  *          X points to right, Y points to top, Z points to you.
  *
  * In current operation, the relations of these coordinates are:
  *      phoneX = cameraZ
- *      phoneY = cameraX * -1
+ *      phoneY = cameraX (mirroring enabled)
  *      phoneZ = cameraY
  *
  *      Figure: Top view of putting phone on top of camera.
@@ -89,7 +89,7 @@ void VectorRotator::fromCameraToPhone(const double *vectorsIn, double *vectorsOu
         // For each vector.
         for (int i = 0; i < numVectors; i++) {
             vectorsOut[i*3    ] = vectorsIn[i*3 + 2];
-            vectorsOut[i*3 + 1] = vectorsIn[i*3    ] * -1;
+            vectorsOut[i*3 + 1] = vectorsIn[i*3    ];
             vectorsOut[i*3 + 2] = vectorsIn[i*3 + 1];
         }
     }

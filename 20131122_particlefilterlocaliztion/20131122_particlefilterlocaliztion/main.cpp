@@ -17,7 +17,7 @@ void callbackAfterViewerMainLoop();
 Scene sceneMain;
 
 // Create OpenniCamera object.
-//OpenniCamera camera;
+OpenniCamera camera;
 
 ParticleFilter particleFilter;
 
@@ -96,10 +96,18 @@ int main(int argc, char** argv) {
         cout << "No point in cube no. " << indexCube << endl;
 
     
-    //camera.initialize();
-    //camera.setSamplingMethod(SAMPLING_GRID, 4, 3);
-    //camera.takeNewDepthPhoto(-1, 0, 0, 0, 0, 1);
+    camera.initialize();
+    int numSamplingPointsW = 3;
+    int numSamplingPointsH = 3;
+    camera.setSamplingMethod(SAMPLING_GRID, numSamplingPointsW, numSamplingPointsH);
+    camera.takeNewDepthPhoto();
     //int *photo = camera.getDepthPhoto();
+    double *samplingVectorsCamera = camera.getSamplingVectors();
+    for (int i = 0; i < numSamplingPointsW * numSamplingPointsH; i++) {
+        cout << samplingVectorsCamera[i * 3    ] << ",\t" <<
+                samplingVectorsCamera[i * 3 + 1] << ",\t" <<
+                samplingVectorsCamera[i * 3 + 2] << endl;
+    }
 
     particleFilter.initialize(&sceneMain);
     
@@ -126,9 +134,9 @@ int main(int argc, char** argv) {
 }
 
 void callbackInViewerMainLoopBeforeDrawing() {
-    cout << "Azimuth: " << cpf.getAzimuth() << endl
-         << "  Pitch: " << cpf.getPitch() << endl
-         << "   Roll: " << cpf.getRoll() << endl;
+    //cout << "Azimuth: " << cpf.getAzimuth() << endl
+    //     << "  Pitch: " << cpf.getPitch() << endl
+    //     << "   Roll: " << cpf.getRoll() << endl;
 
     vectorRotator.setPhoneAngles(cpf.getPitch(), cpf.getRoll(), cpf.getAzimuth());
     
@@ -140,15 +148,15 @@ void callbackInViewerMainLoopBeforeDrawing() {
     //cpf.getDirectionY(directionPhoneY);
     //cpf.getDirectionZ(directionPhoneZ);
 
-    cout << "x = ( " << directionPhoneX[0] << "\t, "
-                     << directionPhoneX[1] << "\t, "
-                     << directionPhoneX[2] << " )" << endl;
-    cout << "y = ( " << directionPhoneY[0] << "\t, "
-                     << directionPhoneY[1] << "\t, "
-                     << directionPhoneY[2] << " )" << endl;
-    cout << "z = ( " << directionPhoneZ[0] << "\t, "
-                     << directionPhoneZ[1] << "\t, "
-                     << directionPhoneZ[2] << " )" << endl;
+    //cout << "x = ( " << directionPhoneX[0] << "\t, "
+    //                 << directionPhoneX[1] << "\t, "
+    //                 << directionPhoneX[2] << " )" << endl;
+    //cout << "y = ( " << directionPhoneY[0] << "\t, "
+    //                 << directionPhoneY[1] << "\t, "
+    //                 << directionPhoneY[2] << " )" << endl;
+    //cout << "z = ( " << directionPhoneZ[0] << "\t, "
+    //                 << directionPhoneZ[1] << "\t, "
+    //                 << directionPhoneZ[2] << " )" << endl;
 
     //cout << "particleFilter.update();" << endl;
     particleFilter.update();
