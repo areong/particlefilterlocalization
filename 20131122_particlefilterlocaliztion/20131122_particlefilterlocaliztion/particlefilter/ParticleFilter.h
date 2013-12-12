@@ -14,7 +14,7 @@ struct ParticleType    {
     //int            position[3];        // [x, y, z]
     double        position[3];
     double        azimuth;
-    double         elevation;
+    double        elevation;
     double        weight;
     double        oldweight;
 };
@@ -26,6 +26,9 @@ public:
     void initialize(Scene* scene);
     void update();
     vector<ParticleType*>* getNewSampleVec();
+
+    // Temporary
+    void setCallbackParticleEvaluation(double (*cb)(double, double, double));
 
 private:
     //Graphics^ g;
@@ -50,6 +53,9 @@ private:
     int _Length;
     int _Width;
     int _Height;
+
+    // Temporary
+    double (*callbackParticleEvaluation)(double, double, double);
 };
 
 #endif

@@ -20,7 +20,7 @@ ParticleFilter::~ParticleFilter(void) {
 void ParticleFilter::initialize(Scene* scene) {
     //InitializeComponent();
 
-    _sampleNum = 1000;
+    _sampleNum = 100;
     _threshold = 0.00000006;
     //_variance = 20;
     _variance = 0.1;
@@ -142,9 +142,9 @@ void ParticleFilter::update() {
     // Return:
     //  The distance. Unit is meter.
     //  Returns -1 if point out of range.
-    double obsrv_x_pos = (*sceneMain).calcDistanceFromPointAlongLine(realObsrvLocation[0], realObsrvLocation[1], 0, 1, 0, 0);
-    double obsrv_y_pos = (*sceneMain).calcDistanceFromPointAlongLine(realObsrvLocation[0], realObsrvLocation[1], 0, 0, 1, 0);
-    double obsrv_z_pos = (*sceneMain).calcDistanceFromPointAlongLine(realObsrvLocation[0], realObsrvLocation[1], 0, 0, 0, 1);
+    //double obsrv_x_pos = (*sceneMain).calcDistanceFromPointAlongLine(realObsrvLocation[0], realObsrvLocation[1], 0, 1, 0, 0);
+    //double obsrv_y_pos = (*sceneMain).calcDistanceFromPointAlongLine(realObsrvLocation[0], realObsrvLocation[1], 0, 0, 1, 0);
+    //double obsrv_z_pos = (*sceneMain).calcDistanceFromPointAlongLine(realObsrvLocation[0], realObsrvLocation[1], 0, 0, 0, 1);
     //double obsrv_Sum = (*sceneMain).calcDistanceFromPointAlongLine(realObsrvLocation[0], realObsrvLocation[1], 0, 0, 0, 0);
     //double obsrv_Sum = obsrv_x_pos + obsrv_y_pos + obsrv_z_pos;
 
@@ -171,15 +171,22 @@ void ParticleFilter::update() {
         double diff = diffFrwd + diffBack + diffLeft + diffRight;
         */
 
-        double smpl_x_pos = (*sceneMain).calcDistanceFromPointAlongLine(sample->position[0], sample->position[1], sample->position[2], 1, 0, 0);
-        double smpl_y_pos = (*sceneMain).calcDistanceFromPointAlongLine(sample->position[0], sample->position[1], sample->position[2], 0, 1, 0);
-        double smpl_z_pos = (*sceneMain).calcDistanceFromPointAlongLine(sample->position[0], sample->position[1], sample->position[2], 0, 0, 1);
+        //double smpl_x_pos = (*sceneMain).calcDistanceFromPointAlongLine(sample->position[0], sample->position[1], sample->position[2], 1, 0, 0);
+        //double smpl_y_pos = (*sceneMain).calcDistanceFromPointAlongLine(sample->position[0], sample->position[1], sample->position[2], 0, 1, 0);
+        //double smpl_z_pos = (*sceneMain).calcDistanceFromPointAlongLine(sample->position[0], sample->position[1], sample->position[2], 0, 0, 1);
         //double smpl_Sum = (*sceneMain).calcDistanceFromPointAlongLine(sample->position[0], sample->position[1], sample->position[2], sample->azimuth, sample->elevation, 0);
         //double smpl_Sum = smpl_x_pos + smpl_y_pos + smpl_z_pos;
 
-        double diff = pow(smpl_x_pos - obsrv_x_pos, 2) + pow(smpl_y_pos - obsrv_y_pos, 2) + pow(smpl_z_pos - obsrv_z_pos, 2);
+        //double diff = pow(smpl_x_pos - obsrv_x_pos, 2) + pow(smpl_y_pos - obsrv_y_pos, 2) + pow(smpl_z_pos - obsrv_z_pos, 2);
+        
+        double diff = callbackParticleEvaluation(sample->position[0],
+                                                 sample->position[1],
+                                                 sample->position[2]);
 
-        double P_fromXtoY = 1.0 / (diff + 1);
+        if (i == 0)
+            cout << diff << endl;
+
+        double P_fromXtoY = 1.0 / (diff + 0.01);
 
         sample->weight = P_fromXtoY * 1;
 
@@ -233,15 +240,20 @@ void ParticleFilter::update() {
                          
             double u = 0;
             double v = 0;
+            double w = 0;
 
             while (u == 0 || v == 0)
             {
             u = (double) rand() / (RAND_MAX + 1);
             v = (double) rand() / (RAND_MAX + 1);
+            w = (double) rand() / (RAND_MAX + 1);
             }
-            double x = sqrt(-2 * log(u)) * cos(2 * M_PI * v) * _variance + sample->position[0];
-            double y = sqrt(-2 * log(u)) * sin(2 * M_PI * v) * _variance + sample->position[1];
-            double z = sqrt(-2 * log(u))                     * _variance + sample->position[2];;
+            //double x = sqrt(-2 * log(u)) * cos(2 * M_PI * v) * _variance + sample->position[0];
+            //double y = sqrt(-2 * log(u)) * sin(2 * M_PI * v) * _variance + sample->position[1];
+            //double z = sqrt(-2 * log(u))                     * _variance + sample->position[2];
+            double x = (u-0.5) * 5 * _variance + sample->position[0];
+            double y = (v-0.5) * 5 * _variance + sample->position[1];
+            double z = (w-0.5) * 5 * _variance + sample->position[2];
 
             newSmpl->position[0] = x;
             newSmpl->position[1] = y;
@@ -263,6 +275,10 @@ void ParticleFilter::update() {
 
 vector<ParticleType*>* ParticleFilter::getNewSampleVec() {
     return _NewSampleVec;
+}
+
+void ParticleFilter::setCallbackParticleEvaluation(double (*cb)(double, double, double)) {
+    callbackParticleEvaluation = cb;
 }
 
 /* ---------------------------------------

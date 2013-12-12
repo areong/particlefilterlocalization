@@ -12,6 +12,7 @@ using namespace std;
 
 void callbackInViewerMainLoopBeforeDrawing();
 void callbackAfterViewerMainLoop();
+double callbackParticleEvaluation(double x, double y, double z);
 
 // Create Scene object.
 Scene sceneMain;
@@ -116,7 +117,10 @@ int main(int argc, char** argv) {
     //            samplingVectorsCamera[i * 3 + 2] << endl;
     //}
 
+    // Particle filter
     particleFilter.initialize(&sceneMain);
+    // Temporary
+    particleFilter.setCallbackParticleEvaluation(&callbackParticleEvaluation);
     
     DataDisplayerTableCubes dataDisplayerTableCubes;
     dataDisplayerTableCubes.setScene(&sceneMain);
@@ -173,13 +177,13 @@ void callbackInViewerMainLoopBeforeDrawing() {
     depthPhotoSampled = camera.getDepthPhotoSampled();
     //cout << depthPhotoSampled[0] << endl;
     
-    double result;
-    result = sceneMain.takeAShotAndEvaluate(0, 0, 0,
-                                            samplingVectorsWorld,
-                                            numSamplingPointsW * numSamplingPointsH,
-                                            depthPhotoSampled);
-
-    cout << result << endl;
+    //double result;
+    //result = sceneMain.takeAShotAndEvaluate(0, 0, 0,
+    //                                        samplingVectorsWorld,
+    //                                        numSamplingPointsW * numSamplingPointsH,
+    //                                        depthPhotoSampled);
+    //
+    //cout << result << endl;
 
     //cout << "particleFilter.update();" << endl;
     particleFilter.update();
@@ -188,4 +192,11 @@ void callbackInViewerMainLoopBeforeDrawing() {
 void callbackAfterViewerMainLoop() {
     cout << "After glutMainLoop()." << endl;
     //camera.shutdown();
+}
+
+double callbackParticleEvaluation(double x, double y, double z) {
+    return sceneMain.takeAShotAndEvaluate(x, y, z,
+                                          samplingVectorsWorld,
+                                          numSamplingPointsW * numSamplingPointsH,
+                                          depthPhotoSampled);
 }
