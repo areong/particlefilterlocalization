@@ -4,6 +4,7 @@
 #include "opennicamera/OpenniCamera.h"
 #include "particlefilter/ParticleFilter.h"
 #include "scene/Scene.h"
+#include "utilities/VectorRotator.h"
 #include "viewer/DataDisplayerParticles.h"
 #include "viewer/DataDisplayerTableCubes.h"
 #include "viewer/Viewer.h"
@@ -21,6 +22,11 @@ Scene sceneMain;
 ParticleFilter particleFilter;
 
 CellphoneFunc cpf;
+
+VectorRotator vectorRotator;
+const double vectorX[3] = {1, 0, 0};
+const double vectorY[3] = {0, 1, 0};
+const double vectorZ[3] = {0, 0, 1};
 
 // X to East, Y to North, Z to Up.
 double directionPhoneX[3];
@@ -124,9 +130,15 @@ void callbackInViewerMainLoopBeforeDrawing() {
          << "  Pitch: " << cpf.getPitch() << endl
          << "   Roll: " << cpf.getRoll() << endl;
 
-    cpf.getDirectionX(directionPhoneX);
-    cpf.getDirectionY(directionPhoneY);
-    cpf.getDirectionZ(directionPhoneZ);
+    vectorRotator.setPhoneAngles(cpf.getPitch(), cpf.getRoll(), cpf.getAzimuth());
+    
+    vectorRotator.fromPhoneToWorld(vectorX, directionPhoneX, 1);
+    vectorRotator.fromPhoneToWorld(vectorY, directionPhoneY, 1);
+    vectorRotator.fromPhoneToWorld(vectorZ, directionPhoneZ, 1);
+
+    //cpf.getDirectionX(directionPhoneX);
+    //cpf.getDirectionY(directionPhoneY);
+    //cpf.getDirectionZ(directionPhoneZ);
 
     cout << "x = ( " << directionPhoneX[0] << "\t, "
                      << directionPhoneX[1] << "\t, "
