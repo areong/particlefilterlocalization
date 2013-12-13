@@ -17,6 +17,7 @@ public:
     int initialize();
     void shutdown();
     void setSamplingMethod(SamplingMethod method, int arga, int argb);
+    void reSample();
     void takeNewDepthPhoto();
     int *getDepthPhoto();
     double *getDepthPhotoSampled();
@@ -41,9 +42,9 @@ private:
 
     int *convertDepthPixelArrayToIntArray(const DepthPixel* depthPixelArray, int length);
     void calcSamplingIndicesByGrid();
+    void calcSamplingIndicesByRandom();
     void calcSamplingVectors();
     int convertIntXYToIndexOfPhotoArray(int x, int y);
-    void calcSamplingIndicesByRandom();
 };
 
 #endif

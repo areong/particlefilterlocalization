@@ -197,6 +197,10 @@ void callbackAfterViewerMainLoop() {
 }
 
 double callbackParticleEvaluation(double x, double y, double z) {
+    // Sample again.
+    camera.reSample();
+    
+    // Evaluate.
     return sceneMain.takeAShotAndEvaluate(x, y, z,
                                           samplingVectorsWorld,
                                           numSamplingPoints,
