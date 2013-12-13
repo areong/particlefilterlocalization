@@ -67,6 +67,7 @@ void Viewer::addDataDisplayer(IDataDisplayer* iDataDisplayer) {
     if (iDataDisplayers == NULL) {
         iDataDisplayers = new IDataDisplayer *[1];
         iDataDisplayers[0] = iDataDisplayer;
+        iDataDisplayers[0]->setViewer(this);
         numIDataDisplayers = 1;
     }
     // If it is not the first adding.
@@ -80,6 +81,7 @@ void Viewer::addDataDisplayer(IDataDisplayer* iDataDisplayer) {
         // Add the new element.
         numIDataDisplayers += 1;
         iDataDisplayersTemp[numIDataDisplayers - 1] = iDataDisplayer;
+        iDataDisplayersTemp[numIDataDisplayers - 1]->setViewer(this);
         
         // Make member array point to this array.
         iDataDisplayers = iDataDisplayersTemp;

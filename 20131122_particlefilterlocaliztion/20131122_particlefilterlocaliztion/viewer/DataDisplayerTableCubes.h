@@ -15,10 +15,12 @@ public:
     DataDisplayerTableCubes(void);
     ~DataDisplayerTableCubes(void);
     void display();
+    void setViewer(Viewer *viewer);
 
     void setScene(Scene *sceneIn);
 
 private:
+    Viewer *viewer;
     Scene *scene;
     double *rangeOfScene;
     double **tableCubes;

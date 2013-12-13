@@ -1,10 +1,15 @@
 #include "DataDisplayerParticles.h"
 #include <glut.h>
+#include "Viewer.h"
 
 DataDisplayerParticles::DataDisplayerParticles(void) {
 }
 
 DataDisplayerParticles::~DataDisplayerParticles(void) {
+}
+
+void DataDisplayerParticles::setViewer(Viewer *viewerIn) {
+    viewer = viewerIn;
 }
 
 void DataDisplayerParticles::display() {

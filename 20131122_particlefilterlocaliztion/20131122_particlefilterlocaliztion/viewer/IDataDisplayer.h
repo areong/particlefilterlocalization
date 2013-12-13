@@ -1,6 +1,8 @@
 #ifndef VIEWER_IDATADISPLAYER_H
 #define VIEWER_IDATADISPLAYER_H
 
+class Viewer;
+
 /* -----------------------------------------------------
  * IDataDisplayer
  *
@@ -10,6 +12,12 @@
 class IDataDisplayer {
 public:
     virtual void display() = 0; // pure virtual
+
+    /**
+    Set viewer to access Viewer's methods.
+    Called by Viewer when calling Viewer::addDataDisplayer.
+    */
+    virtual void setViewer(Viewer *viewer) = 0;
 };
 
 #endif

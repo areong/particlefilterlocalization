@@ -9,10 +9,12 @@ public:
     DataDisplayerParticles(void);
     ~DataDisplayerParticles(void);
     void display();
+    void setViewer(Viewer *viewer);
 
     void setParticleFilter(ParticleFilter* particleFilterIn);
 
-private:
+private:    
+    Viewer *viewer;
     ParticleFilter* particleFilter;
     vector<ParticleType*>* sampleVec;
 };

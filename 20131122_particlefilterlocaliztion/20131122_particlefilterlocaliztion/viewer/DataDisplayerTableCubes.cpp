@@ -1,6 +1,7 @@
 #include "DataDisplayerTableCubes.h"
 #include <windows.h>
 #include <glut.h>
+#include "Viewer.h"
 #include "../scene/Scene.h"
 
 DataDisplayerTableCubes::DataDisplayerTableCubes(void) {
@@ -10,6 +11,10 @@ DataDisplayerTableCubes::DataDisplayerTableCubes(void) {
 }
 
 DataDisplayerTableCubes::~DataDisplayerTableCubes(void) {
+}
+
+void DataDisplayerTableCubes::setViewer(Viewer *viewerIn) {
+    viewer = viewerIn;
 }
 
 void DataDisplayerTableCubes::display() {
