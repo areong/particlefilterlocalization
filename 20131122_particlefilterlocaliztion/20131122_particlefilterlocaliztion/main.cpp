@@ -5,6 +5,7 @@
 #include "particlefilter/ParticleFilter.h"
 #include "scene/Scene.h"
 #include "utilities/VectorRotator.h"
+#include "utilities/WindowProjector.h"
 #include "viewer/DataDisplayerParticles.h"
 #include "viewer/DataDisplayerTableCubes.h"
 #include "viewer/Viewer.h"
@@ -130,6 +131,8 @@ int main(int argc, char** argv) {
     DataDisplayerParticles dataDisplayerParticles;
     dataDisplayerParticles.setParticleFilter(&particleFilter);
 
+    WindowProjector windowProjector;
+
     Viewer viewerMain("Particle Filter Localization");
     viewerMain.initialize(argc, argv);
     viewerMain.setCallbackInMainLoopBeforeDrawing(&callbackInViewerMainLoopBeforeDrawing);
@@ -137,6 +140,8 @@ int main(int argc, char** argv) {
     
     viewerMain.addDataDisplayer(&dataDisplayerTableCubes);
     viewerMain.addDataDisplayer(&dataDisplayerParticles);
+
+    viewerMain.setWindowProjector(&windowProjector);
 
     viewerMain.runMainLoop();
 

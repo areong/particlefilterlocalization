@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <glut.h>
 #include "IDataDisplayer.h"
+#include "../utilities/WindowProjector.h"
 
 Viewer::Viewer(char* title) {
     self = this;
@@ -90,6 +91,10 @@ void Viewer::addDataDisplayer(IDataDisplayer* iDataDisplayer) {
 
 void Viewer::removeAllDataDisplayers() {
     iDataDisplayers = NULL;
+}
+
+void Viewer::setWindowProjector(WindowProjector *windowProjectorIn) {
+    windowProjector = windowProjectorIn;
 }
 
 /* ----------------------------------------

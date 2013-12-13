@@ -7,6 +7,7 @@
 
 // Foward declarations
 class IDataDisplayer;
+class WindowProjector;
 
 class Viewer {
 public:
@@ -19,6 +20,8 @@ public:
 
     void addDataDisplayer(IDataDisplayer* iDataDisplayer);
     void removeAllDataDisplayers();
+
+    void setWindowProjector(WindowProjector *windowProjector);
 
 protected:
     virtual void display();
@@ -40,6 +43,8 @@ private:
     // An array to store IDataDisplayer pointers.
     IDataDisplayer** iDataDisplayers;
     int numIDataDisplayers;
+
+    WindowProjector *windowProjector;
 };
 
 #endif
