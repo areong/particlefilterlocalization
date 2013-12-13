@@ -19,8 +19,10 @@ Scene sceneMain;
 
 // Create OpenniCamera object.
 OpenniCamera camera;
-int numSamplingPointsW = 1;
-int numSamplingPointsH = 1;
+SamplingMethod samplingMethod = SAMPLING_RANDOM;
+int samplingMethodArg1 = 1;
+int samplingMethodArg2 = 1;
+int numSamplingPoints = samplingMethodArg1;
 double *samplingVectorsCamera;
 double samplingVectorsWorld[3];
 double *depthPhotoSampled;
@@ -107,7 +109,7 @@ int main(int argc, char** argv) {
 
     // Camera
     camera.initialize();
-    camera.setSamplingMethod(SAMPLING_GRID, numSamplingPointsW, numSamplingPointsH);
+    camera.setSamplingMethod(samplingMethod, samplingMethodArg1, samplingMethodArg2);
     camera.takeNewDepthPhoto();
     //int *photo = camera.getDepthPhoto();
     samplingVectorsCamera = camera.getSamplingVectors();
@@ -197,6 +199,6 @@ void callbackAfterViewerMainLoop() {
 double callbackParticleEvaluation(double x, double y, double z) {
     return sceneMain.takeAShotAndEvaluate(x, y, z,
                                           samplingVectorsWorld,
-                                          numSamplingPointsW * numSamplingPointsH,
+                                          numSamplingPoints,
                                           depthPhotoSampled);
 }

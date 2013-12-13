@@ -1,5 +1,7 @@
 #include "OpenniCamera.h"
 #include <iostream>
+#include <stdlib.h> // srand, rand.
+#include <time.h>
 using namespace std;
 
 OpenniCamera::OpenniCamera(void) {
@@ -65,11 +67,14 @@ void OpenniCamera::setSamplingMethod(SamplingMethod method, int arga, int argb) 
     case SAMPLING_GRID:
         numSamplePoints = samplingArgA * samplingArgB;
         calcSamplingIndicesByGrid();
-        calcSamplingVectorsByGrid();
+        calcSamplingVectors();
         break;
     case SAMPLING_GRID_RANDOM:
         break;
     case SAMPLING_RANDOM:
+        numSamplePoints = samplingArgA;
+        calcSamplingIndicesByRandom();
+        calcSamplingVectors();
         break;
     default:
         break;
@@ -84,19 +89,9 @@ void OpenniCamera::takeNewDepthPhoto() {
     depthPhoto = (DepthPixel *)videoFrameRefDepth.getData();
 
     // Sample the photo.
-    switch (samplingMethod) {
-    case SAMPLING_GRID:
-        depthPhotoSampled = new double[numSamplePoints];
-        for (int i = 0; i < numSamplePoints; i++)
-            depthPhotoSampled[i] = (double)depthPhoto[samplingIndicesOfPhoto[i]] / 1000;
-        break;
-    case SAMPLING_GRID_RANDOM:
-        break;
-    case SAMPLING_RANDOM:
-        break;
-    default:
-        break;
-    }
+    depthPhotoSampled = new double[numSamplePoints];
+    for (int i = 0; i < numSamplePoints; i++)
+        depthPhotoSampled[i] = (double)depthPhoto[samplingIndicesOfPhoto[i]] / 1000;
 }
 
 int *OpenniCamera::getDepthPhoto() {
@@ -145,7 +140,6 @@ void OpenniCamera::calcSamplingIndicesByGrid() {
     samplingIndicesOfPhoto = new int[numSamplePoints];
     samplingPointsXYOnPhoto = new int[numSamplePoints * 2];
 
-
     // Fill in the array.
     for (int ih = 0; ih < samplingArgB; ih++)
         for (int iw = 0; iw < samplingArgA; iw++) {
@@ -169,7 +163,7 @@ void OpenniCamera::calcSamplingIndicesByGrid() {
  * OpenniCamera::calcSamplingIndicesByGrid() should have been called,
  * because this method uses the array samplingIndicesOfPhoto.
  * ------------------------------------------------ */
-void OpenniCamera::calcSamplingVectorsByGrid() {
+void OpenniCamera::calcSamplingVectors() {
     float *vectorsTemp = new float[numSamplePoints * 3];
     samplingVectors = new double[numSamplePoints * 3];
     // Convert each sampling point.
@@ -190,4 +184,32 @@ void OpenniCamera::calcSamplingVectorsByGrid() {
 
 int OpenniCamera::convertIntXYToIndexOfPhotoArray(int x, int y) {
     return y * widthFrame + x;
+}
+
+/* ------------------------------------------------
+ * calcSamplingIndicesByRandom
+ * Called by OpenniCamera::setSamplingMethod.
+ * Sample point positions choosed randomly.
+ * ------------------------------------------------ */
+void OpenniCamera::calcSamplingIndicesByRandom() {
+    // Create int array samplingIndicesOfPhoto.
+    samplingIndicesOfPhoto = new int[numSamplePoints];
+    samplingPointsXYOnPhoto = new int[numSamplePoints * 2];
+
+    // Fill in the array.
+    for (int i = 0; i < numSamplePoints; i++) {
+        // Random seed
+        srand(time(NULL));
+
+        // Calculate index
+        int x = (int)( widthFrame * ( rand() / (float)(RAND_MAX+1) ) );
+        int y = (int)( heightFrame * ( rand() / (float)(RAND_MAX+1) ) );
+        int indexPhotoArray = convertIntXYToIndexOfPhotoArray(x, y);
+        samplingIndicesOfPhoto[ i ] = indexPhotoArray;
+        cout << i << '\t' << samplingIndicesOfPhoto[ i ] << endl;
+
+        // Save x and y.
+        samplingPointsXYOnPhoto[i*2    ] = x;
+        samplingPointsXYOnPhoto[i*2 + 1] = y;
+    }
 }

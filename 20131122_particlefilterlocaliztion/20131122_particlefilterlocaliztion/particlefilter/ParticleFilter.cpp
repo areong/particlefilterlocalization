@@ -20,7 +20,7 @@ ParticleFilter::~ParticleFilter(void) {
 void ParticleFilter::initialize(Scene* scene) {
     //InitializeComponent();
 
-    _sampleNum = 100;
+    _sampleNum = 1000;
     _threshold = 0.00000006;
     //_variance = 20;
     _variance = 0.1;

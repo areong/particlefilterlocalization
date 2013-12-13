@@ -41,8 +41,9 @@ private:
 
     int *convertDepthPixelArrayToIntArray(const DepthPixel* depthPixelArray, int length);
     void calcSamplingIndicesByGrid();
-    void calcSamplingVectorsByGrid();
+    void calcSamplingVectors();
     int convertIntXYToIndexOfPhotoArray(int x, int y);
+    void calcSamplingIndicesByRandom();
 };
 
 #endif
