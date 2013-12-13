@@ -51,7 +51,7 @@ int main(int argc, char** argv) {
     // Parameters:
     //  1. File path of the ply file.
     //  2. Length of edge of cubes, used in cutting the scene into cubes. Unit is meter.
-    sceneMain.initialize("res/captured.ply", 1);
+    sceneMain.initialize("res/captured.ply", 0.5);
 
     // Set the distance defining whether a point touches a line,
     // used in calculating distances later.

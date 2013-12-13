@@ -183,8 +183,8 @@ void ParticleFilter::update() {
                                                  sample->position[1],
                                                  sample->position[2]);
 
-        if (i == 0)
-            cout << diff << endl;
+        //if (i == 0)
+        //    cout << diff << endl;
 
         double P_fromXtoY = 1.0 / (diff + 0.01);
 
