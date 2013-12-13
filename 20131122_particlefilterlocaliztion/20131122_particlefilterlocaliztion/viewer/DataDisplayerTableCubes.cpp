@@ -19,16 +19,20 @@ void DataDisplayerTableCubes::setViewer(Viewer *viewerIn) {
 
 void DataDisplayerTableCubes::display() {
     double sizeHalf = 0.005;
-    double sizeSceneX = rangeOfScene[0] - rangeOfScene[1];
-    double sizeSceneY = rangeOfScene[2] - rangeOfScene[3];
     double x;
     double y;
 
     for (int indexCube = indexCubeStart; indexCube < indexCubeEnd; indexCube++) {
         for (int i = 0; i < numPointsEachCube[indexCube]; i++) {
-             x = (tableCubes[indexCube][i*3  ] - rangeOfScene[1]) / sizeSceneX * 2 - 1;
-             y = (tableCubes[indexCube][i*3+1] - rangeOfScene[3]) / sizeSceneY * 2 - 1;
+             // Calculate window position.
+            viewer->projectAPointToWindow(tableCubes[indexCube][i*3  ],
+                                          tableCubes[indexCube][i*3+1],
+                                          tableCubes[indexCube][i*3+2],
+                                          1, -1,
+                                          1, -1,
+                                          &x, &y);
 
+            // Draw.
              glBegin(GL_QUADS);
                 glColor3f(1.0f, 0.0f, 0.0f); // Red
                 glVertex2f(x - sizeHalf, y - sizeHalf);

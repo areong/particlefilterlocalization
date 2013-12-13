@@ -17,16 +17,21 @@ void DataDisplayerParticles::display() {
     sampleVec = particleFilter->getNewSampleVec();
 
     double sizeHalf = 0.004;
-    double sizeSceneX = 8;
-    double sizeSceneY = 7;
     double x;
     double y;
 
     // Draw each sample.
     for (unsigned int i = 0; i < sampleVec->size(); i++) {
-        x = ((*sampleVec)[i]->position[0] - (-4)) / sizeSceneX * 2 - 1;
-        y = ((*sampleVec)[i]->position[1] - (-3)) / sizeSceneY * 2 - 1;
+        // Calculate window position.
+        viewer->projectAPointToWindow((*sampleVec)[i]->position[0],
+                                      (*sampleVec)[i]->position[1],
+                                      (*sampleVec)[i]->position[2],
+                                      1, -1,
+                                      1, -1,
+                                      &x, &y);
 
+
+        // Draw.
         glBegin(GL_QUADS);
             glColor3f(0.0f, 1.0f, 1.0f); // Cyan
             glVertex2f(x - sizeHalf, y - sizeHalf);

@@ -22,6 +22,21 @@ public:
     void removeAllDataDisplayers();
 
     void setWindowProjector(WindowProjector *windowProjector);
+    
+    /**
+    Project a point in world coordinates to window coordinates.
+    Viewer::setWindowProjector(...) should be called previously.
+    In window coordinates, the visible region is
+        -1 < xWindow < 1
+        -1 < yWindow < 1
+        (<= or < doesn't matter(?)).
+    Unit is half of width/height of window, which changes as window's size changes.
+    It is OpenGL's unit.
+    */
+    void projectAPointToWindow(double xWorld, double yWorld, double zWorld,
+                               double xWindowMax, double xWindowMin,
+                               double yWindowMax, double yWindowMin,
+                               double *xWindow, double *yWindow);
 
 protected:
     virtual void display();

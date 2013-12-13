@@ -97,6 +97,16 @@ void Viewer::setWindowProjector(WindowProjector *windowProjectorIn) {
     windowProjector = windowProjectorIn;
 }
 
+void Viewer::projectAPointToWindow(double xWorld, double yWorld, double zWorld,
+                                   double xWindowMax, double xWindowMin,
+                                   double yWindowMax, double yWindowMin,
+                                   double *xWindow, double *yWindow) {
+    windowProjector->projectAPoint(xWorld, yWorld, zWorld,
+                                   xWindowMax, xWindowMin,
+                                   yWindowMax, yWindowMin,
+                                   xWindow, yWindow);
+}
+
 /* ----------------------------------------
  * Protected:
  * ---------------------------------------- */

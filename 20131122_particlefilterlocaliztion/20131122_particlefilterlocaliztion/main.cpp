@@ -132,6 +132,8 @@ int main(int argc, char** argv) {
     dataDisplayerParticles.setParticleFilter(&particleFilter);
 
     WindowProjector windowProjector;
+    windowProjector.setRangeOfScene(rangeOfScene);
+    windowProjector.setMode(TOPVIEW_YPOS_XPOS);
 
     Viewer viewerMain("Particle Filter Localization");
     viewerMain.initialize(argc, argv);
