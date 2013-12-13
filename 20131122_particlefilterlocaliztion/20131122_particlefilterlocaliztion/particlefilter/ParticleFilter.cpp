@@ -121,8 +121,13 @@ void ParticleFilter::update() {
 
     //g->Clear(System::Drawing::Color::White);
     //PBox->Refresh();
-
+    
+    // Clear memory.
+    for (int i = 0; i < _OldSampleVec->size(); i++)
+        delete (*_OldSampleVec)[i];
     _OldSampleVec->clear();
+    delete _OldSampleVec;
+
     _OldSampleVec = _NewSampleVec;
     _NewSampleVec = new vector<ParticleType*>();
                 
@@ -218,7 +223,7 @@ void ParticleFilter::update() {
         ParticleType* sample = (*_OldSampleVec)[i];
         sample->weight /= normalFactor;
     }
-
+    
     // Sampling with Gaussian distribution 
     for (int i = 0; i < _OldSampleVec->size(); i++)
     {
@@ -271,6 +276,8 @@ void ParticleFilter::update() {
     }
 
     //PBox->Refresh();
+
+    
 }
 
 vector<ParticleType*>* ParticleFilter::getNewSampleVec() {

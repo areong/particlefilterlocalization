@@ -49,7 +49,7 @@ double Scene::takeAShotAndEvaluate(double xPoint, double yPoint, double zPoint,
                                                                    samplingVectors[i*3  ],
                                                                    samplingVectors[i*3+1],
                                                                    samplingVectors[i*3+2]);
-        // Calculate sum of square.
+        // Calculate sum of square error.
         result += (testingSet[i] - distancesSampling[i]) * (testingSet[i] - distancesSampling[i]);
     }
     return result;
