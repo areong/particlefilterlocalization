@@ -188,8 +188,7 @@ void ParticleFilter::update() {
                                                  sample->position[1],
                                                  sample->position[2]);
 
-        //if (i == 0)
-        //    cout << diff << endl;
+        //cout << i << ":\t" << diff << endl;
 
         double P_fromXtoY = 1.0 / (diff + 0.01);
 
@@ -199,6 +198,9 @@ void ParticleFilter::update() {
     }
 
     double mean = normalFactor / _OldSampleVec->size();
+
+    cout << "mean: " << mean << endl;
+
     double var = 0;
     for (int i = 0; i < _OldSampleVec->size(); i++)
     {
@@ -206,7 +208,7 @@ void ParticleFilter::update() {
     }
     var /= _OldSampleVec->size();
     double stdDev = sqrt(var);
-    _threshold = mean + 0.1 * stdDev;
+    _threshold = mean + 0.5 * stdDev;
 
     normalFactor = 0;
     for (int i = 0; i < _OldSampleVec->size(); i++)

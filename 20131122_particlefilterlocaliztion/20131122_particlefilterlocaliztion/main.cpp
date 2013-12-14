@@ -20,12 +20,13 @@ Scene sceneMain;
 
 // Create OpenniCamera object.
 OpenniCamera camera;
-SamplingMethod samplingMethod = SAMPLING_RANDOM;
-int samplingMethodArg1 = 1;
-int samplingMethodArg2 = 1;
-int numSamplingPoints = samplingMethodArg1;
+SamplingMethod samplingMethod = SAMPLING_GRID;
+//SamplingMethod samplingMethod = SAMPLING_RANDOM;
+int samplingMethodArg1 = 2;
+int samplingMethodArg2 = 2;
+int numSamplingPoints = samplingMethodArg1 * samplingMethodArg2;
 double *samplingVectorsCamera;
-double samplingVectorsWorld[3];
+double *samplingVectorsWorld;
 double *depthPhotoSampled;
 
 ParticleFilter particleFilter;
@@ -51,7 +52,7 @@ int main(int argc, char** argv) {
     // Parameters:
     //  1. File path of the ply file.
     //  2. Length of edge of cubes, used in cutting the scene into cubes. Unit is meter.
-    sceneMain.initialize("res/captured.ply", 0.5);
+    sceneMain.initialize("res/captured.ply", 0.25);
 
     // Set the distance defining whether a point touches a line,
     // used in calculating distances later.
@@ -163,7 +164,7 @@ void callbackInViewerMainLoopBeforeDrawing() {
     //vectorRotator.fromPhoneToWorld(vectorX, directionPhoneX, 1);
     //vectorRotator.fromPhoneToWorld(vectorY, directionPhoneY, 1);
     //vectorRotator.fromPhoneToWorld(vectorZ, directionPhoneZ, 1);
-    vectorRotator.fromCameraToWorld(samplingVectorsCamera, samplingVectorsWorld, 1);
+    samplingVectorsWorld = vectorRotator.fromCameraToWorld(samplingVectorsCamera, numSamplingPoints);
 
     //cpf.getDirectionX(directionPhoneX);
     //cpf.getDirectionY(directionPhoneY);
@@ -185,14 +186,6 @@ void callbackInViewerMainLoopBeforeDrawing() {
     camera.takeNewDepthPhoto();
     depthPhotoSampled = camera.getDepthPhotoSampled();
     //cout << depthPhotoSampled[0] << endl;
-    
-    //double result;
-    //result = sceneMain.takeAShotAndEvaluate(0, 0, 0,
-    //                                        samplingVectorsWorld,
-    //                                        numSamplingPointsW * numSamplingPointsH,
-    //                                        depthPhotoSampled);
-    //
-    //cout << result << endl;
 
     //cout << "particleFilter.update();" << endl;
     particleFilter.update();

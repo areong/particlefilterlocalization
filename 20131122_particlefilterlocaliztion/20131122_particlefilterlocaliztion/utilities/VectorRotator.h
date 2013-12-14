@@ -7,9 +7,12 @@ public:
     ~VectorRotator(void);
     void setPhoneAngles(double angleX, double angleY, double angleZ);
     void setPhoneAngleZOffset(double offset);
-    void fromCameraToWorld(const double *vectorsIn, double *vectorsOut, int numVectors);
-    void fromCameraToPhone(const double *vectorsIn, double *vectorsOut, int numVectors);
-    void fromPhoneToWorld(const double *vectorsIn, double *vectorsOut, int numVectors);
+    //void fromCameraToWorld(const double *vectorsIn, double *vectorsOut, int numVectors);
+    //void fromCameraToPhone(const double *vectorsIn, double *vectorsOut, int numVectors);
+    //void fromPhoneToWorld(const double *vectorsIn, double *vectorsOut, int numVectors);
+    double *fromCameraToWorld(const double *vectorsIn, int numVectors);
+    double *fromCameraToPhone(const double *vectorsIn, int numVectors);
+    double *fromPhoneToWorld(const double *vectorsIn, int numVectors);
 
 private:
     // Defined by Android. Unit is radian.

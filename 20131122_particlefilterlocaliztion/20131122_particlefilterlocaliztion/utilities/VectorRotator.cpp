@@ -51,15 +51,31 @@ void VectorRotator::setPhoneAngleZOffset(double offset) {
     angleZOffset = offset;
 }
 
-void VectorRotator::fromCameraToWorld(const double *vectorsIn, double *vectorsOut, int numVectors) {
+//void VectorRotator::fromCameraToWorld(const double *vectorsIn, double *vectorsOut, int numVectors) {
+//     // Simple check validality.
+//    if (vectorsIn != 0 && vectorsOut != 0 && numVectors > 0) {
+//        //double *vectorsTemp = new double[numVectors];
+//        double *vectorsTemp = 0;
+//        fromCameraToPhone(vectorsIn, vectorsTemp, numVectors);
+//        //cout << vectorsTemp[0] << '\t' << vectorsTemp[1] << '\t' << vectorsTemp[2] << endl;
+//        fromPhoneToWorld(vectorsTemp, vectorsOut, numVectors);
+//        //cout << vectorsOut[0] << '\t' << vectorsOut[1] << '\t' << vectorsOut[2] << endl;
+//    }
+//}
+
+double *VectorRotator::fromCameraToWorld(const double *vectorsIn, int numVectors) {
      // Simple check validality.
-    if (vectorsIn != 0 && vectorsOut != 0 && numVectors != 0) {
-        double *vectorsTemp = new double[numVectors];
-        fromCameraToPhone(vectorsIn, vectorsTemp, numVectors);
+    if (vectorsIn != 0 && numVectors > 0) {
+        //double *vectorsTemp = new double[numVectors];
+        double *vectorsTemp = fromCameraToPhone(vectorsIn, numVectors);
         //cout << vectorsTemp[0] << '\t' << vectorsTemp[1] << '\t' << vectorsTemp[2] << endl;
-        fromPhoneToWorld(vectorsTemp, vectorsOut, numVectors);
+        double *vectorsOut = fromPhoneToWorld(vectorsTemp, numVectors);
         //cout << vectorsOut[0] << '\t' << vectorsOut[1] << '\t' << vectorsOut[2] << endl;
+        delete vectorsTemp;
+        return vectorsOut;
     }
+    else
+        return 0;
 }
 
 /* ----------------------------------------------------------------------
@@ -92,9 +108,36 @@ void VectorRotator::fromCameraToWorld(const double *vectorsIn, double *vectorsOu
  *
  * Length of both array should equal to numVectors.
  * ----------------------------------------------------------------------  */
-void VectorRotator::fromCameraToPhone(const double *vectorsIn, double *vectorsOut, int numVectors) {
+//void VectorRotator::fromCameraToPhone(const double *vectorsIn, double *vectorsOut, int numVectors) {
+//    // Simple check validality.
+//    //if (vectorsIn != 0 && vectorsOut != 0 && numVectors > 0) {
+//    if (vectorsIn != 0 && numVectors > 0) {
+//        // Create vectorOut.
+//        if (vectorsOut != 0)
+//            delete vectorsOut;
+//        vectorsOut = new double[numVectors];
+//
+//        // For each vector.
+//        double length;
+//        for (int i = 0; i < numVectors; i++) {
+//            // Normalize.
+//            length = calcLengthVector(vectorsIn[i*3    ],
+//                                      vectorsIn[i*3 + 1],
+//                                      vectorsIn[i*3 + 2]);
+//            vectorsOut[i*3    ] = vectorsIn[i*3 + 2] * -1 / length;
+//            vectorsOut[i*3 + 1] = vectorsIn[i*3    ] *  1 / length;
+//            vectorsOut[i*3 + 2] = vectorsIn[i*3 + 1] * -1 / length;
+//       }
+//    }
+//}
+
+double *VectorRotator::fromCameraToPhone(const double *vectorsIn, int numVectors) {
     // Simple check validality.
-    if (vectorsIn != 0 && vectorsOut != 0 && numVectors != 0) {
+    //if (vectorsIn != 0 && vectorsOut != 0 && numVectors > 0) {
+    if (vectorsIn != 0 && numVectors > 0) {
+        // Create vectorOut.
+        double *vectorsOut = new double[numVectors * 3];
+
         // For each vector.
         double length;
         for (int i = 0; i < numVectors; i++) {
@@ -106,7 +149,10 @@ void VectorRotator::fromCameraToPhone(const double *vectorsIn, double *vectorsOu
             vectorsOut[i*3 + 1] = vectorsIn[i*3    ] *  1 / length;
             vectorsOut[i*3 + 2] = vectorsIn[i*3 + 1] * -1 / length;
         }
+        return vectorsOut;
     }
+    else
+        return 0;
 }
 
 /* --------------------------------------------------
@@ -117,9 +163,42 @@ void VectorRotator::fromCameraToPhone(const double *vectorsIn, double *vectorsOu
  *      X points to East, Y points to North, Z points to up.
  * Thus multiply -1 to X and Z.
  * --------------------------------------------------  */
-void VectorRotator::fromPhoneToWorld(const double *vectorsIn, double *vectorsOut, int numVectors) {
+//void VectorRotator::fromPhoneToWorld(const double *vectorsIn, double *vectorsOut, int numVectors) {
+//    // Simple check validality.
+//    //if (vectorsIn != 0 && vectorsOut != 0 && numVectors > 0) {
+//    if (vectorsIn != 0 && numVectors > 0) {
+//        // Create vectorOut.
+//        if (vectorsOut != 0)
+//            delete vectorsOut;
+//        vectorsOut = new double[numVectors];
+//
+//        // For each vector.
+//        double length;
+//        for (int i = 0; i < numVectors; i++) {
+//            // Normalize.
+//            length = calcLengthVector(vectorsIn[i*3    ],
+//                                      vectorsIn[i*3 + 1],
+//                                      vectorsIn[i*3 + 2]);
+//            vectorsOut[i*3    ] = (R11 * vectorsIn[i*3    ] +
+//                                   R12 * vectorsIn[i*3 + 1] +
+//                                   R13 * vectorsIn[i*3 + 2] ) / length * -1;
+//            vectorsOut[i*3 + 1] = (R21 * vectorsIn[i*3    ] +
+//                                   R22 * vectorsIn[i*3 + 1] +
+//                                   R23 * vectorsIn[i*3 + 2] ) / length;
+//            vectorsOut[i*3 + 2] = (R31 * vectorsIn[i*3    ] +
+//                                   R32 * vectorsIn[i*3 + 1] +
+//                                   R33 * vectorsIn[i*3 + 2] ) / length * -1;
+//        }
+//    }
+//}
+
+double *VectorRotator::fromPhoneToWorld(const double *vectorsIn, int numVectors) {
     // Simple check validality.
-    if (vectorsIn != 0 && vectorsOut != 0 && numVectors != 0) {
+    //if (vectorsIn != 0 && vectorsOut != 0 && numVectors > 0) {
+    if (vectorsIn != 0 && numVectors > 0) {
+        // Create vectorOut.
+        double *vectorsOut = new double[numVectors * 3];
+
         // For each vector.
         double length;
         for (int i = 0; i < numVectors; i++) {
@@ -137,7 +216,10 @@ void VectorRotator::fromPhoneToWorld(const double *vectorsIn, double *vectorsOut
                                    R32 * vectorsIn[i*3 + 1] +
                                    R33 * vectorsIn[i*3 + 2] ) / length * -1;
         }
+        return vectorsOut;
     }
+    else
+        return 0;
 }
 
 /* -----------------------------------------------------------

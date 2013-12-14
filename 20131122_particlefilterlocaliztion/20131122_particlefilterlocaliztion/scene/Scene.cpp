@@ -431,12 +431,12 @@ double Scene::distanceToNearestPointTouchingTheLine(double xStart, double yStart
     // If distance found, return it.
     if (distanceShortest >= 0)
         return distanceShortest;
-    //// If not found, return the distance to the last center point.
-    //else
-    //    return lengthLine * (numOfTimeWhileLoop - 1);
-    // If not found, return a big value.
+    // If not found, return the distance to the last center point.
     else
-        return 100;
+        return lengthLine * (numOfTimeWhileLoop - 1);
+    //If not found, return a big value.
+    //else
+    //    return 100;
 }
 
 /* ---------------------------------------------
