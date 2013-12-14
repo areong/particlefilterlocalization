@@ -22,8 +22,8 @@ Scene sceneMain;
 OpenniCamera camera;
 SamplingMethod samplingMethod = SAMPLING_GRID;
 //SamplingMethod samplingMethod = SAMPLING_RANDOM;
-int samplingMethodArg1 = 2;
-int samplingMethodArg2 = 2;
+int samplingMethodArg1 = 3;
+int samplingMethodArg2 = 3;
 int numSamplingPoints = samplingMethodArg1 * samplingMethodArg2;
 double *samplingVectorsCamera;
 double *samplingVectorsWorld;
@@ -198,7 +198,7 @@ void callbackAfterViewerMainLoop() {
 
 double callbackParticleEvaluation(double x, double y, double z) {
     // Sample again.
-    camera.reSample();
+    //camera.reSample();
     
     // Evaluate.
     return sceneMain.takeAShotAndEvaluate(x, y, z,

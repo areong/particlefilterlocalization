@@ -112,6 +112,8 @@ void OpenniCamera::takeNewDepthPhoto() {
     depthPhoto = (DepthPixel *)videoFrameRefDepth.getData();
 
     // Sample the photo.
+    if (depthPhotoSampled != 0)
+        delete depthPhotoSampled;
     depthPhotoSampled = new double[numSamplePoints];
     for (int i = 0; i < numSamplePoints; i++)
         depthPhotoSampled[i] = (double)depthPhoto[samplingIndicesOfPhoto[i]] / 1000;
@@ -160,6 +162,10 @@ void OpenniCamera::calcSamplingIndicesByGrid() {
     double halfHeightGrid = ((double)heightFrame / (double)samplingArgB) / 2.0;
 
     // Create int array samplingIndicesOfPhoto.
+    if (samplingIndicesOfPhoto != 0)
+        delete samplingIndicesOfPhoto;
+    if (samplingPointsXYOnPhoto != 0)
+        delete samplingPointsXYOnPhoto;
     samplingIndicesOfPhoto = new int[numSamplePoints];
     samplingPointsXYOnPhoto = new int[numSamplePoints * 2];
 
@@ -186,6 +192,10 @@ void OpenniCamera::calcSamplingIndicesByGrid() {
  * ------------------------------------------------ */
 void OpenniCamera::calcSamplingIndicesByRandom() {
     // Create int array samplingIndicesOfPhoto.
+    if (samplingIndicesOfPhoto != 0)
+        delete samplingIndicesOfPhoto;
+    if (samplingPointsXYOnPhoto != 0)
+        delete samplingPointsXYOnPhoto;
     samplingIndicesOfPhoto = new int[numSamplePoints];
     samplingPointsXYOnPhoto = new int[numSamplePoints * 2];
 
