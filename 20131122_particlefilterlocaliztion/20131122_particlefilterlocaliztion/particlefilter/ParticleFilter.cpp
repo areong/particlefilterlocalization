@@ -31,6 +31,10 @@ void ParticleFilter::initialize(Scene* scene) {
 
     _OldSampleVec = new vector<ParticleType*>();
     _NewSampleVec = new vector<ParticleType*>();
+    
+    _stdDevHstry = new double[3];
+    for(int = 0; i < 3; i++)
+        _stdDevHstry[i] = 0;
 
     srand( (unsigned)time( NULL ) );
 
@@ -208,7 +212,13 @@ void ParticleFilter::update() {
     }
     var /= _OldSampleVec->size();
     double stdDev = sqrt(var);
-    _threshold = mean + 0.5 * stdDev;
+    _threshold = mean + 0.1 * stdDev;
+    
+    _stdDevHstry[2] = _stdDevHstry[1];
+    _stdDevHstry[1] = _stdDevHstry[0];
+    _stdDevHstry[0] = stdDev;
+    double stdDevChange = (_stdDevHstry[0] - _stdDevHstry[2]) / 2;
+    _variance = 0.98 * _variance * exp(stdDevChange * 1000);
 
     normalFactor = 0;
     for (int i = 0; i < _OldSampleVec->size(); i++)
@@ -255,12 +265,12 @@ void ParticleFilter::update() {
             v = (double) rand() / (RAND_MAX + 1);
             w = (double) rand() / (RAND_MAX + 1);
             }
-            //double x = sqrt(-2 * log(u)) * cos(2 * M_PI * v) * _variance + sample->position[0];
-            //double y = sqrt(-2 * log(u)) * sin(2 * M_PI * v) * _variance + sample->position[1];
-            //double z = sqrt(-2 * log(u))                     * _variance + sample->position[2];
-            double x = (u-0.5) * 5 * _variance + sample->position[0];
-            double y = (v-0.5) * 5 * _variance + sample->position[1];
-            double z = (w-0.5) * 5 * _variance + sample->position[2];
+            double x = sqrt(-2 * log(u)) * cos(2 * M_PI * v) * _variance + sample->position[0];
+            double y = sqrt(-2 * log(u)) * sin(2 * M_PI * v) * _variance + sample->position[1];
+            double z = sqrt(-2 * log(u)) * sin(2 * M_PI * w) * _variance + sample->position[2];
+            //double x = (u-0.5) * 5 * _variance + sample->position[0];
+            //double y = (v-0.5) * 5 * _variance + sample->position[1];
+            //double z = (w-0.5) * 5 * _variance + sample->position[2];
 
             newSmpl->position[0] = x;
             newSmpl->position[1] = y;
