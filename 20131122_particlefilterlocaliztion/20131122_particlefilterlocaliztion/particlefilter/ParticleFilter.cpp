@@ -33,7 +33,7 @@ void ParticleFilter::initialize(Scene* scene) {
     _NewSampleVec = new vector<ParticleType*>();
     
     _stdDevHstry = new double[3];
-    for(int = 0; i < 3; i++)
+    for(int i = 0; i < 3; i++)
         _stdDevHstry[i] = 0;
 
     srand( (unsigned)time( NULL ) );
@@ -159,6 +159,8 @@ void ParticleFilter::update() {
 
     double normalFactor = 0;
 
+    double meanOfDiff = 0;
+
     // Calcute the weight to prepare sampling
     for (int i = 0; i < _OldSampleVec->size(); i++)
     {
@@ -193,6 +195,7 @@ void ParticleFilter::update() {
                                                  sample->position[2]);
 
         //cout << i << ":\t" << diff << endl;
+        meanOfDiff += diff;
 
         double P_fromXtoY = 1.0 / (diff + 0.01);
 
@@ -202,8 +205,10 @@ void ParticleFilter::update() {
     }
 
     double mean = normalFactor / _OldSampleVec->size();
+    meanOfDiff /= _OldSampleVec->size();
 
     cout << "mean: " << mean << endl;
+    cout << "meanOfDiff: " << meanOfDiff << endl;
 
     double var = 0;
     for (int i = 0; i < _OldSampleVec->size(); i++)
@@ -214,11 +219,18 @@ void ParticleFilter::update() {
     double stdDev = sqrt(var);
     _threshold = mean + 0.1 * stdDev;
     
-    _stdDevHstry[2] = _stdDevHstry[1];
-    _stdDevHstry[1] = _stdDevHstry[0];
-    _stdDevHstry[0] = stdDev;
-    double stdDevChange = (_stdDevHstry[0] - _stdDevHstry[2]) / 2;
-    _variance = 0.98 * _variance * exp(stdDevChange * 1000);
+    //_stdDevHstry[2] = _stdDevHstry[1];
+    //_stdDevHstry[1] = _stdDevHstry[0];
+    //_stdDevHstry[0] = stdDev;
+    //double stdDevChange = (_stdDevHstry[0] - _stdDevHstry[2]) / 2;
+    //_variance = 0.98 * _variance * exp(stdDevChange * 1000);
+
+    if (meanOfDiff > 5 && _variance < 0.2)
+        _variance *= 1.1;
+    else if (meanOfDiff <= 5 && _variance > 0.01)
+        _variance *= 0.9;
+
+    cout << "_variance: " << _variance << endl;
 
     normalFactor = 0;
     for (int i = 0; i < _OldSampleVec->size(); i++)
