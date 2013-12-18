@@ -42,6 +42,10 @@ private:
 
     vector<ParticleType*>* _OldSampleVec;
     vector<ParticleType*>* _NewSampleVec;
+    
+    double *_stdDevHstry
+    
+    double *_SceneSize;
 
     double *_RangeOfScene;
     double *_SceneSize;
