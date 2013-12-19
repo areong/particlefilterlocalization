@@ -42,17 +42,16 @@ double Scene::takeAShotAndEvaluate(double xPoint, double yPoint, double zPoint,
                                    double *samplingVectors, int numSamplingVectors,
                                    double *testingSet) {
     // Calculate distances on each vectors.
-    double *distancesSampling = new double[numSamplingVectors];
     double result = 0;
     for (int i = 0; i < numSamplingVectors; i++) {
-        distancesSampling[i] = distanceToNearestPointTouchingTheLine(xPoint, yPoint, zPoint,
+        double distance = distanceToNearestPointTouchingTheLine(xPoint, yPoint, zPoint,
                                                                    samplingVectors[i*3  ],
                                                                    samplingVectors[i*3+1],
                                                                    samplingVectors[i*3+2]);
         // Calculate sum of square error.
-        result += (testingSet[i] - distancesSampling[i]) * (testingSet[i] - distancesSampling[i]);
+        result += (testingSet[i] - distance) * (testingSet[i] - distance);
     }
-    return result;
+    return result / numSamplingVectors;
 }
 
 double Scene::calcDistanceFromPointAlongLine(double xPoint, double yPoint, double zPoint, 

@@ -225,10 +225,17 @@ void ParticleFilter::update() {
     //double stdDevChange = (_stdDevHstry[0] - _stdDevHstry[2]) / 2;
     //_variance = 0.98 * _variance * exp(stdDevChange * 1000);
 
-    if (meanOfDiff > 5 && _variance < 0.2)
-        _variance *= 1.1;
-    else if (meanOfDiff <= 5 && _variance > 0.01)
-        _variance *= 0.9;
+    //if (meanOfDiff > 0.5 && _variance < 0.2)
+    //    _variance *= 1.1;
+    //else if (meanOfDiff <= 0.5 && _variance > 0.01)
+    //    _variance *= 0.9;
+
+    if (meanOfDiff > 2)
+        _variance = 0.2;
+    else if (meanOfDiff < 0.1)
+        _variance = 0.01;
+    else
+        _variance = meanOfDiff / 10;
 
     cout << "_variance: " << _variance << endl;
 
