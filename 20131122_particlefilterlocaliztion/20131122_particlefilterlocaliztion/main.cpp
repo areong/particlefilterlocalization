@@ -22,7 +22,7 @@ Scene sceneMain;
 OpenniCamera camera;
 SamplingMethod samplingMethod = SAMPLING_GRID;
 //SamplingMethod samplingMethod = SAMPLING_RANDOM;
-int samplingMethodArg1 = 3;
+int samplingMethodArg1 = 4;
 int samplingMethodArg2 = 3;
 int numSamplingPoints = samplingMethodArg1 * samplingMethodArg2;
 double *samplingVectorsCamera;

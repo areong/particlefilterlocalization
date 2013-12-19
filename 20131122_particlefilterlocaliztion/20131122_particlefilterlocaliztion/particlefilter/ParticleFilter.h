@@ -52,6 +52,7 @@ private:
 
     int _sampleNum;
     double _threshold;
+    double _standardDeviation;
     double _variance;
 
     int _Length;

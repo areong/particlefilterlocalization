@@ -2,14 +2,19 @@
  * Code modified from Ian Kuo, 2013/12/7.
  * --------------------------------------- */
 
+#ifndef _USE_MATH_DEFINES
+#define _USE_MATH_DEFINES
+#endif
+
 #include "ParticleFilter.h"
+#include <cmath>
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
 #include "../scene/Scene.h"
 using namespace std;
 
-#define M_PI       3.14159265358979323846
+//#define M_PI       3.14159265358979323846
 
 ParticleFilter::ParticleFilter(void) {
 }
@@ -23,7 +28,9 @@ void ParticleFilter::initialize(Scene* scene) {
     _sampleNum = 1000;
     _threshold = 0.00000006;
     //_variance = 20;
-    _variance = 0.1;
+    _standardDeviation = 0.01;
+    _variance = _standardDeviation * _standardDeviation;
+    
 
     //_Length    = PBox->Width;
     //_Width    = PBox->Height;
@@ -219,23 +226,27 @@ void ParticleFilter::update() {
     double stdDev = sqrt(var);
     _threshold = mean + 0.1 * stdDev;
     
+    // Method 1
     //_stdDevHstry[2] = _stdDevHstry[1];
     //_stdDevHstry[1] = _stdDevHstry[0];
     //_stdDevHstry[0] = stdDev;
     //double stdDevChange = (_stdDevHstry[0] - _stdDevHstry[2]) / 2;
     //_variance = 0.98 * _variance * exp(stdDevChange * 1000);
 
+    // Method 2
     //if (meanOfDiff > 0.5 && _variance < 0.2)
     //    _variance *= 1.1;
     //else if (meanOfDiff <= 0.5 && _variance > 0.01)
     //    _variance *= 0.9;
 
-    if (meanOfDiff > 2)
-        _variance = 0.2;
+    // Method 3
+    if (meanOfDiff > 10)
+        _standardDeviation = 2;
     else if (meanOfDiff < 0.1)
-        _variance = 0.01;
+        _standardDeviation = 0.02;
     else
-        _variance = meanOfDiff / 10;
+        _standardDeviation = meanOfDiff / 5;
+    _variance = _standardDeviation * _standardDeviation;
 
     cout << "_variance: " << _variance << endl;
 
@@ -273,24 +284,31 @@ void ParticleFilter::update() {
         while (num < gen_smpl_num)
         {
             ParticleType* newSmpl = new ParticleType();
-                         
-            double u = 0;
-            double v = 0;
-            double w = 0;
+            
+            double rseed = 0; // To generate r.
+            double theta = 0;
+            double phi = 0;
 
-            while (u == 0 || v == 0)
-            {
-            u = (double) rand() / (RAND_MAX + 1);
-            v = (double) rand() / (RAND_MAX + 1);
-            w = (double) rand() / (RAND_MAX + 1);
+            while (rseed == 0) {
+                rseed = (double) rand() / (RAND_MAX + 1);
+                theta = (double) rand() / (RAND_MAX + 1);
+                phi = (double) rand() / (RAND_MAX + 1);
             }
-            double x = sqrt(-2 * log(u)) * cos(2 * M_PI * v) * _variance + sample->position[0];
-            double y = sqrt(-2 * log(u)) * sin(2 * M_PI * v) * _variance + sample->position[1];
-            double z = sqrt(-2 * log(u)) * sin(2 * M_PI * w) * _variance + sample->position[2];
+            
+            double x = sqrt(-2 * log(rseed)) * _standardDeviation
+                     * sin(M_PI * theta) * cos(2 * M_PI * phi)
+                     + sample->position[0];
+            double y = sqrt(-2 * log(rseed)) * _standardDeviation
+                     * sin(M_PI * theta) * sin(2 * M_PI * phi)
+                     + sample->position[1];
+            double z = sqrt(-2 * log(rseed)) * _standardDeviation
+                     * cos(M_PI * theta)
+                     + sample->position[2];
+            // double x = sqrt(-2 * log(r))...
             //double x = (u-0.5) * 5 * _variance + sample->position[0];
             //double y = (v-0.5) * 5 * _variance + sample->position[1];
             //double z = (w-0.5) * 5 * _variance + sample->position[2];
-
+            
             newSmpl->position[0] = x;
             newSmpl->position[1] = y;
             newSmpl->position[2] = z;
