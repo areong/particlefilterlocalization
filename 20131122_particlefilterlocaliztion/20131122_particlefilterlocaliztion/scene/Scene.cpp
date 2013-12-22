@@ -51,7 +51,7 @@ double Scene::takeAShotAndEvaluate(double xPoint, double yPoint, double zPoint,
         // Calculate sum of square error.
         result += (testingSet[i] - distance) * (testingSet[i] - distance);
     }
-    return result / numSamplingVectors;
+    return sqrt(result / numSamplingVectors);
 }
 
 double Scene::calcDistanceFromPointAlongLine(double xPoint, double yPoint, double zPoint, 

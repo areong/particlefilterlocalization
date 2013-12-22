@@ -22,8 +22,8 @@ Scene sceneMain;
 OpenniCamera camera;
 SamplingMethod samplingMethod = SAMPLING_GRID;
 //SamplingMethod samplingMethod = SAMPLING_RANDOM;
-int samplingMethodArg1 = 4;
-int samplingMethodArg2 = 3;
+int samplingMethodArg1 = 12;
+int samplingMethodArg2 = 10;
 int numSamplingPoints = samplingMethodArg1 * samplingMethodArg2;
 double *samplingVectorsCamera;
 double *samplingVectorsWorld;
@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
 
     // VectorRotator
     // Set offset 90 degrees, which makes no need to rotate model manually.
-    vectorRotator.setPhoneAngleZOffset(-90);
+    vectorRotator.setPhoneAngleZOffset(0);
 
     // Camera
     camera.initialize();

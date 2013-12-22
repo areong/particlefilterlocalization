@@ -25,7 +25,7 @@ ParticleFilter::~ParticleFilter(void) {
 void ParticleFilter::initialize(Scene* scene) {
     //InitializeComponent();
 
-    _sampleNum = 1000;
+    _sampleNum = 100;
     _threshold = 0.00000006;
     //_variance = 20;
     _standardDeviation = 0.01;
@@ -165,8 +165,10 @@ void ParticleFilter::update() {
     //double obsrv_Sum = obsrv_x_pos + obsrv_y_pos + obsrv_z_pos;
 
     double normalFactor = 0;
-
-    double meanOfDiff = 0;
+	
+	// Store best particle
+	int indexBestParticle = 0;
+	double weightHighest = 0;
 
     // Calcute the weight to prepare sampling
     for (int i = 0; i < _OldSampleVec->size(); i++)
@@ -197,25 +199,28 @@ void ParticleFilter::update() {
 
         //double diff = pow(smpl_x_pos - obsrv_x_pos, 2) + pow(smpl_y_pos - obsrv_y_pos, 2) + pow(smpl_z_pos - obsrv_z_pos, 2);
         
-        double diff = callbackParticleEvaluation(sample->position[0],
+        sample->diff = callbackParticleEvaluation(sample->position[0],
                                                  sample->position[1],
                                                  sample->position[2]);
 
         //cout << i << ":\t" << diff << endl;
-        meanOfDiff += diff;
 
-        double P_fromXtoY = 1.0 / (diff + 0.01);
+        double P_fromXtoY = 1.0 / (sample->diff + 0.01);
 
         sample->weight = P_fromXtoY * 1;
 
         normalFactor += sample->weight;
+
+		// Store highest weight
+		if (sample->weight > weightHighest) {
+			indexBestParticle = i;
+			weightHighest = sample->weight;
+		}
     }
 
     double mean = normalFactor / _OldSampleVec->size();
-    meanOfDiff /= _OldSampleVec->size();
 
     cout << "mean: " << mean << endl;
-    cout << "meanOfDiff: " << meanOfDiff << endl;
 
     double var = 0;
     for (int i = 0; i < _OldSampleVec->size(); i++)
@@ -239,25 +244,37 @@ void ParticleFilter::update() {
     //else if (meanOfDiff <= 0.5 && _variance > 0.01)
     //    _variance *= 0.9;
 
-    // Method 3
-    if (meanOfDiff > 10)
-        _standardDeviation = 2;
-    else if (meanOfDiff < 0.1)
-        _standardDeviation = 0.02;
-    else
-        _standardDeviation = meanOfDiff / 5;
-    _variance = _standardDeviation * _standardDeviation;
-
-    cout << "_variance: " << _variance << endl;
+    
 
     normalFactor = 0;
+    double meanOfDiff = 0;
     for (int i = 0; i < _OldSampleVec->size(); i++)
     {
         ParticleType* sample = (*_OldSampleVec)[i];
-        if (sample->weight < _threshold)
-        sample->weight = 0;
+
+		// "Delete" bad particles. Best particle reserved.
+		if (i != indexBestParticle && sample->weight < _threshold)
+			sample->weight = 0;
+		else
+			// Calculate mean of diff among good particles.
+			meanOfDiff += sample->diff;
+
         normalFactor += sample->weight;
     }
+
+    meanOfDiff /= _OldSampleVec->size();
+    cout << "meanOfDiff: " << meanOfDiff << endl;
+
+	// Adjust resampling distribution according to good particles.
+    if (meanOfDiff > 2)
+        _standardDeviation = 1;
+    else if (meanOfDiff < 0.1)
+        _standardDeviation = 0.05;
+    else
+        _standardDeviation = meanOfDiff / 2;
+    _variance = _standardDeviation * _standardDeviation;
+
+    cout << "_variance: " << _variance << endl;
 
     // Normalize the weight
     for (int i = 0; i < _OldSampleVec->size(); i++)

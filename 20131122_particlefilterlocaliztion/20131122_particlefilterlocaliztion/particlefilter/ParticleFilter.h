@@ -15,6 +15,7 @@ struct ParticleType    {
     double        position[3];
     double        azimuth;
     double        elevation;
+	double		  diff;
     double        weight;
     double        oldweight;
 };
