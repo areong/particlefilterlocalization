@@ -28,6 +28,7 @@ public:
     void update();
     vector<ParticleType*>* getOldSampleVec();
     vector<ParticleType*>* getNewSampleVec();
+    ParticleType* getMeanOldGoodParticle();
 
     // Temporary
     void setCallbackParticleEvaluation(double (*cb)(double, double, double));
@@ -44,6 +45,7 @@ private:
 
     vector<ParticleType*>* _OldSampleVec;
     vector<ParticleType*>* _NewSampleVec;
+    ParticleType *meanOldGoodParticle;
     
     double *_stdDevHstry;
     

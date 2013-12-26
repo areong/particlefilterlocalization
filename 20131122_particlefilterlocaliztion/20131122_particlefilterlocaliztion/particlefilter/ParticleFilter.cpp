@@ -38,7 +38,9 @@ void ParticleFilter::initialize(Scene* scene) {
 
     _OldSampleVec = new vector<ParticleType*>();
     _NewSampleVec = new vector<ParticleType*>();
-    
+
+    meanOldGoodParticle = new ParticleType();
+
     _stdDevHstry = new double[3];
     for(int i = 0; i < 3; i++)
         _stdDevHstry[i] = 0;
@@ -280,11 +282,24 @@ void ParticleFilter::update() {
 
     cout << "_variance: " << _variance << endl;
 
-    // Normalize the weight
+    // Normalize the weight.
     for (int i = 0; i < _OldSampleVec->size(); i++)
     {
         ParticleType* sample = (*_OldSampleVec)[i];
         sample->weight /= normalFactor;
+    }
+
+    // Calculate mean position of old good particles.
+    meanOldGoodParticle->position[0] = 0;
+    meanOldGoodParticle->position[1] = 0;
+    meanOldGoodParticle->position[2] = 0;
+    for (int i = 0; i < _OldSampleVec->size(); i++) {
+        ParticleType* sample = (*_OldSampleVec)[i];
+        if (sample->weight != 0) {
+            meanOldGoodParticle->position[0] += sample->weight * sample->position[0];
+            meanOldGoodParticle->position[1] += sample->weight * sample->position[1];
+            meanOldGoodParticle->position[2] += sample->weight * sample->position[2];
+        }
     }
     
     // Sampling with Gaussian distribution 
@@ -356,6 +371,10 @@ vector<ParticleType*>* ParticleFilter::getOldSampleVec() {
 
 vector<ParticleType*>* ParticleFilter::getNewSampleVec() {
     return _NewSampleVec;
+}
+
+ParticleType* ParticleFilter::getMeanOldGoodParticle() {
+    return meanOldGoodParticle;
 }
 
 void ParticleFilter::setCallbackParticleEvaluation(double (*cb)(double, double, double)) {

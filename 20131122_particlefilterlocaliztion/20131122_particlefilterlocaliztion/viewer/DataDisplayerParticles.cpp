@@ -16,6 +16,7 @@ void DataDisplayerParticles::display() {
     // Get particles as vectors.
     oldSampleVec = particleFilter->getOldSampleVec();
     newSampleVec = particleFilter->getNewSampleVec();
+    meanOldGoodParticle = particleFilter->getMeanOldGoodParticle();
 
     double sizeHalf = 0.004;
     double x;
@@ -66,6 +67,26 @@ void DataDisplayerParticles::display() {
             glVertex2f(x - sizeHalf, y + sizeHalf);
         glEnd();
     }
+
+    // Draw mean position of old good particles.
+    // Calculate window position.
+    viewer->projectAPointToWindow(meanOldGoodParticle->position[0],
+                                  meanOldGoodParticle->position[1],
+                                  meanOldGoodParticle->position[2],
+                                  1, -1,
+                                  1, -1,
+                                  &x, &y);
+
+
+    // Draw.
+    sizeHalf = 0.01;
+    glBegin(GL_QUADS);
+        glColor3f(1.0f, 1.0f, 0.0f); // Yellow
+        glVertex2f(x - sizeHalf, y - sizeHalf);
+        glVertex2f(x + sizeHalf, y - sizeHalf);
+        glVertex2f(x + sizeHalf, y + sizeHalf);
+        glVertex2f(x - sizeHalf, y + sizeHalf);
+    glEnd();
 }
 
 void DataDisplayerParticles::setParticleFilter(ParticleFilter* particleFilterIn) {

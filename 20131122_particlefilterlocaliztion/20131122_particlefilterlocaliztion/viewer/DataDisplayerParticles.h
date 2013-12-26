@@ -18,6 +18,7 @@ private:
     ParticleFilter* particleFilter;
     vector<ParticleType*>* oldSampleVec;
     vector<ParticleType*>* newSampleVec;
+    ParticleType *meanOldGoodParticle;
 };
 
 #endif
