@@ -26,7 +26,7 @@ VectorRotator::~VectorRotator(void) {
 void VectorRotator::setPhoneAngles(double angleXIn, double angleYIn, double angleZIn) {
     angleX = degreeToRadian( angleXIn );
     angleY = degreeToRadian( angleYIn );
-    angleZ = degreeToRadian( angleZIn + angleZOffset );
+    angleZ = degreeToRadian( angleZIn - angleZOffset );
 
     // Compute rotation matrix.
     // Ref: http://planning.cs.uiuc.edu/node102.html
