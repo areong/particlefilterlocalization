@@ -13,7 +13,7 @@ void DataDisplayerParticles::setViewer(Viewer *viewerIn) {
 }
 
 void DataDisplayerParticles::display() {
-    // Get sample vector.
+    // Get particles as vectors.
     oldSampleVec = particleFilter->getOldSampleVec();
     newSampleVec = particleFilter->getNewSampleVec();
 
@@ -21,7 +21,7 @@ void DataDisplayerParticles::display() {
     double x;
     double y;
 
-    // Draw new sample.
+    // Draw new particles.
     for (unsigned int i = 0; i < newSampleVec->size(); i++) {
         // Calculate window position.
         viewer->projectAPointToWindow((*newSampleVec)[i]->position[0],
@@ -42,9 +42,9 @@ void DataDisplayerParticles::display() {
         glEnd();
     }
 
-    // Draw old sample.
+    // Draw old good particles.
     for (unsigned int i = 0; i < oldSampleVec->size(); i++) {
-        // If is bad particle, don't draw it.
+        // If it is a bad particle, don't draw it.
         if ((*oldSampleVec)[i]->weight == 0)
             continue;
 
