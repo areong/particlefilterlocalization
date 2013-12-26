@@ -165,10 +165,10 @@ void ParticleFilter::update() {
     //double obsrv_Sum = obsrv_x_pos + obsrv_y_pos + obsrv_z_pos;
 
     double normalFactor = 0;
-	
-	// Store best particle
-	int indexBestParticle = 0;
-	double weightHighest = 0;
+    
+    // Store best particle
+    int indexBestParticle = 0;
+    double weightHighest = 0;
 
     // Calcute the weight to prepare sampling
     for (int i = 0; i < _OldSampleVec->size(); i++)
@@ -211,11 +211,11 @@ void ParticleFilter::update() {
 
         normalFactor += sample->weight;
 
-		// Store highest weight
-		if (sample->weight > weightHighest) {
-			indexBestParticle = i;
-			weightHighest = sample->weight;
-		}
+        // Store highest weight
+        if (sample->weight > weightHighest) {
+            indexBestParticle = i;
+            weightHighest = sample->weight;
+        }
     }
 
     double mean = normalFactor / _OldSampleVec->size();
@@ -251,12 +251,12 @@ void ParticleFilter::update() {
     {
         ParticleType* sample = (*_OldSampleVec)[i];
 
-		// "Delete" bad particles. Best particle reserved.
-		if (i != indexBestParticle && sample->weight < _threshold)
-			sample->weight = 0;
-		else {
-			// Calculate mean of diff among good particles.
-			meanOfDiff += sample->diff;
+        // "Delete" bad particles. Best particle reserved.
+        if (i != indexBestParticle && sample->weight < _threshold)
+            sample->weight = 0;
+        else {
+            // Calculate mean of diff among good particles.
+            meanOfDiff += sample->diff;
             numGoodParticle++;
         }
 
@@ -269,7 +269,7 @@ void ParticleFilter::update() {
     meanOfDiff /= numGoodParticle;
     cout << "meanOfDiff: " << meanOfDiff << endl;
 
-	// Adjust resampling distribution according to good particles.
+    // Adjust resampling distribution according to good particles.
     if (meanOfDiff > 2)
         _standardDeviation = 1;
     else if (meanOfDiff < 0.1)
