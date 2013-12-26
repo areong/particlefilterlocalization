@@ -244,10 +244,9 @@ void ParticleFilter::update() {
     //else if (meanOfDiff <= 0.5 && _variance > 0.01)
     //    _variance *= 0.9;
 
-    
-
     normalFactor = 0;
     double meanOfDiff = 0;
+    int numGoodParticle = 0;
     for (int i = 0; i < _OldSampleVec->size(); i++)
     {
         ParticleType* sample = (*_OldSampleVec)[i];
@@ -255,14 +254,19 @@ void ParticleFilter::update() {
 		// "Delete" bad particles. Best particle reserved.
 		if (i != indexBestParticle && sample->weight < _threshold)
 			sample->weight = 0;
-		else
+		else {
 			// Calculate mean of diff among good particles.
 			meanOfDiff += sample->diff;
+            numGoodParticle++;
+        }
 
         normalFactor += sample->weight;
     }
 
-    meanOfDiff /= _OldSampleVec->size();
+    if (numGoodParticle == 0)
+        numGoodParticle = 1;
+
+    meanOfDiff /= numGoodParticle;
     cout << "meanOfDiff: " << meanOfDiff << endl;
 
 	// Adjust resampling distribution according to good particles.
