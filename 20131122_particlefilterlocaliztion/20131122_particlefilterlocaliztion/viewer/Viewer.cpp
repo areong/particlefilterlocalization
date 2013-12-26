@@ -126,10 +126,25 @@ void Viewer::display() {
 
 void Viewer::onKey(unsigned char key, int /*x*/, int /*y*/) {
     switch (key) {
+    // ESC
     case 27:
         if (callbackKeyEsc != NULL)
             callbackKeyEsc();
         exit (1);
+        break;
+    // Change viewing mode.
+    // 1
+    case 49:
+        windowProjector->setMode(TOPVIEW_YPOS_XPOS);
+        break;
+    // 2
+    case 50:
+        windowProjector->setMode(FRONTVIEW_ZPOS_XPOS);
+        break;
+    // 3
+    case 51:
+        windowProjector->setMode(RIGHTVIEW_ZPOS_YPOS);
+        break;
     }
 }
 
