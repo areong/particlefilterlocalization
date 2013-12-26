@@ -14,18 +14,44 @@ void DataDisplayerParticles::setViewer(Viewer *viewerIn) {
 
 void DataDisplayerParticles::display() {
     // Get sample vector.
-    sampleVec = particleFilter->getNewSampleVec();
+    oldSampleVec = particleFilter->getOldSampleVec();
+    newSampleVec = particleFilter->getNewSampleVec();
 
     double sizeHalf = 0.004;
     double x;
     double y;
 
-    // Draw each sample.
-    for (unsigned int i = 0; i < sampleVec->size(); i++) {
+    // Draw new sample.
+    for (unsigned int i = 0; i < newSampleVec->size(); i++) {
         // Calculate window position.
-        viewer->projectAPointToWindow((*sampleVec)[i]->position[0],
-                                      (*sampleVec)[i]->position[1],
-                                      (*sampleVec)[i]->position[2],
+        viewer->projectAPointToWindow((*newSampleVec)[i]->position[0],
+                                      (*newSampleVec)[i]->position[1],
+                                      (*newSampleVec)[i]->position[2],
+                                      1, -1,
+                                      1, -1,
+                                      &x, &y);
+
+
+        // Draw.
+        glBegin(GL_QUADS);
+            glColor3f(0.75f, 0.0f, 1.0f); // Electric Purple
+            glVertex2f(x - sizeHalf, y - sizeHalf);
+            glVertex2f(x + sizeHalf, y - sizeHalf);
+            glVertex2f(x + sizeHalf, y + sizeHalf);
+            glVertex2f(x - sizeHalf, y + sizeHalf);
+        glEnd();
+    }
+
+    // Draw old sample.
+    for (unsigned int i = 0; i < oldSampleVec->size(); i++) {
+        // If is bad particle, don't draw it.
+        if ((*oldSampleVec)[i]->weight == 0)
+            continue;
+
+        // Calculate window position.
+        viewer->projectAPointToWindow((*oldSampleVec)[i]->position[0],
+                                      (*oldSampleVec)[i]->position[1],
+                                      (*oldSampleVec)[i]->position[2],
                                       1, -1,
                                       1, -1,
                                       &x, &y);

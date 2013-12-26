@@ -16,7 +16,8 @@ public:
 private:    
     Viewer *viewer;
     ParticleFilter* particleFilter;
-    vector<ParticleType*>* sampleVec;
+    vector<ParticleType*>* oldSampleVec;
+    vector<ParticleType*>* newSampleVec;
 };
 
 #endif

@@ -350,6 +350,10 @@ void ParticleFilter::update() {
     
 }
 
+vector<ParticleType*>* ParticleFilter::getOldSampleVec() {
+    return _OldSampleVec;
+}
+
 vector<ParticleType*>* ParticleFilter::getNewSampleVec() {
     return _NewSampleVec;
 }

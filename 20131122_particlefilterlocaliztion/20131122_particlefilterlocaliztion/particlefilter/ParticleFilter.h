@@ -26,6 +26,7 @@ public:
     ~ParticleFilter(void);
     void initialize(Scene* scene);
     void update();
+    vector<ParticleType*>* getOldSampleVec();
     vector<ParticleType*>* getNewSampleVec();
 
     // Temporary
