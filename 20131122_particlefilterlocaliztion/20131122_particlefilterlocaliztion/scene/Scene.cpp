@@ -83,6 +83,27 @@ int Scene::XYZtoIndexOfCube(double x, double y, double z) {
     return index;
 }
 
+int Scene::indexOfCubeToXComponent(int indexOfCube) {
+    if (indexOfCube < numCubes && indexOfCube >= 0)
+        return (indexOfCube % xyNumCubes) % xNumCubes;
+    else
+        return 0;
+}
+
+int Scene::indexOfCubeToYComponent(int indexOfCube) {
+    if (indexOfCube < numCubes && indexOfCube >= 0)
+        return (indexOfCube % xyNumCubes) / xNumCubes;
+    else
+        return 0;
+}
+
+int Scene::indexOfCubeToZComponent(int indexOfCube) {
+    if (indexOfCube < numCubes && indexOfCube >= 0)
+        return indexOfCube / xyNumCubes;
+    else
+        return 0;
+}
+
 int Scene::printDPointsXYZ() {
     // If array is not created yet.
     if (!dPointsXYZ) return 1;
@@ -110,12 +131,20 @@ int *Scene::getNumPointsEachCube() {
     // Again, how to forbid changing the array when passed outside?
 }
 
-int *Scene::getNumCubes() {
-    int *nums = new int[3];
-    nums[0] = xNumCubes;
-    nums[1] = yNumCubes;
-    nums[2] = zNumCubes;
-    return nums;
+int Scene::getNumCubes() {
+    return numCubes;
+}
+
+int Scene::getXNumCubes() {
+    return xNumCubes;
+}
+
+int Scene::getYNumCubes() {
+    return yNumCubes;
+}
+
+int Scene::getZNumCubes() {
+    return zNumCubes;
 }
 
 /* -------------------------
@@ -158,7 +187,7 @@ void Scene::createTableCubes() {
     yNumCubes = (int)( (dRangeOfScene[2] - dRangeOfScene[3]) / lengthCubeEdge );
     zNumCubes = (int)( (dRangeOfScene[4] - dRangeOfScene[5]) / lengthCubeEdge );
     xyNumCubes = xNumCubes * yNumCubes;
-    int numCubes = xNumCubes * yNumCubes * zNumCubes;
+    numCubes = xNumCubes * yNumCubes * zNumCubes;
 
     // Create tableCubes and numPointsEachCube.
     tableCubes = new double *[numCubes];

@@ -18,6 +18,8 @@ public:
     Called by Viewer when calling Viewer::addDataDisplayer.
     */
     virtual void setViewer(Viewer *viewer) = 0;
+
+    virtual void onKeyPressed(int key) = 0;
 };
 
 #endif

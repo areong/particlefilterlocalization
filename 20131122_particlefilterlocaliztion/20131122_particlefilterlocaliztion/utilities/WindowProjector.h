@@ -1,6 +1,8 @@
 #ifndef UTILITIES_WINDOWPROJECTOR_H
 #define UTILITIES_WINDOWPROJECTOR_H
 
+#include "IViewModeListener.h"
+
 typedef enum {
     TOPVIEW_YPOS_XPOS = 1,
     FRONTVIEW_ZPOS_XPOS = 2,
@@ -34,7 +36,7 @@ public:
     and the X axis of window equals to negative 'b' axis of scene.
     'a' and 'b' can be X, Y or Z.
     */
-    void setMode(ViewMode viewMode);
+    void setViewMode(ViewMode viewMode);
     
     /**
     Project a point in world coordinates to window coordinates.
@@ -50,6 +52,10 @@ public:
                        double yWindowMax, double yWindowMin,
                        double *xWindow, double *yWindow);
 
+    void registerViewModeListener(IViewModeListener *listener);
+    //void unregisterViewModeListener(IViewModeListener *listener);
+    void notifyViewModeListener();
+
 private:
     double *rangeOfScene; // [xMax, xMin, yMax, yMin, zMax, zMin]
     double lengthXRangeOfScene;
@@ -57,6 +63,9 @@ private:
     double lengthZRangeOfScene;
 
     ViewMode viewMode;
+
+    IViewModeListener** iViewModeListeners;
+    int numIViewModeListener;
 };
 
 #endif

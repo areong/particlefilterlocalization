@@ -135,17 +135,21 @@ void Viewer::onKey(unsigned char key, int /*x*/, int /*y*/) {
     // Change viewing mode.
     // 1
     case 49:
-        windowProjector->setMode(TOPVIEW_YPOS_XPOS);
+        windowProjector->setViewMode(TOPVIEW_YPOS_XPOS);
         break;
     // 2
     case 50:
-        windowProjector->setMode(FRONTVIEW_ZPOS_XPOS);
+        windowProjector->setViewMode(FRONTVIEW_ZPOS_XPOS);
         break;
     // 3
     case 51:
-        windowProjector->setMode(RIGHTVIEW_ZPOS_YPOS);
+        windowProjector->setViewMode(RIGHTVIEW_ZPOS_YPOS);
         break;
     }
+
+    // Let IDataDisplayers receive the key.
+    for (int i = 0; i < numIDataDisplayers; i++)
+        iDataDisplayers[i]->onKeyPressed(key);
 }
 
 void Viewer::initOpenGLCallbacks() {

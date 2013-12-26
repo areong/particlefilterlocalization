@@ -8,8 +8,10 @@ class DataDisplayerParticles : public IDataDisplayer {
 public:
     DataDisplayerParticles(void);
     ~DataDisplayerParticles(void);
-    void display();
+    
     void setViewer(Viewer *viewer);
+    void display();
+    void onKeyPressed(int key);
 
     void setParticleFilter(ParticleFilter* particleFilterIn);
 

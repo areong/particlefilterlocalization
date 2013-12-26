@@ -5,6 +5,9 @@ WindowProjector::WindowProjector(void) {
     for (int i = 0; i < 6; i++)
         rangeOfScene[i] = 0;
     viewMode = TOPVIEW_YPOS_XPOS;
+
+    iViewModeListeners = 0;
+    numIViewModeListener = 0;
 }
 
 WindowProjector::~WindowProjector(void) {
@@ -18,8 +21,9 @@ void WindowProjector::setRangeOfScene(double *rangeOfSceneIn) {
     lengthZRangeOfScene = rangeOfScene[4] - rangeOfScene[5];
 }
 
-void WindowProjector::setMode(ViewMode viewModeIn) {
+void WindowProjector::setViewMode(ViewMode viewModeIn) {
     viewMode = viewModeIn;
+    notifyViewModeListener();
 }
 
 void WindowProjector::projectAPoint(double xWorld, double yWorld, double zWorld,
@@ -45,4 +49,37 @@ void WindowProjector::projectAPoint(double xWorld, double yWorld, double zWorld,
         *yWindow = (yWorld - rangeOfScene[3]) / lengthYRangeOfScene * 2 - 1;
         break;
     }    
+}
+
+void WindowProjector::registerViewModeListener(IViewModeListener *listener) {
+    // If it is the first adding.
+    if (iViewModeListeners == 0) {
+        iViewModeListeners = new IViewModeListener *[1];
+        iViewModeListeners[0] = listener;
+        numIViewModeListener = 1;
+    }
+    // If it is not the first adding.
+    else {
+        IViewModeListener** iViewModeListenersTemp = new IViewModeListener *[numIViewModeListener + 1];
+
+        // Copy from the old array.
+        for (int i = 0; i < numIViewModeListener; i++)
+            iViewModeListenersTemp[i] = iViewModeListeners[i];
+
+        // Add the new element.
+        numIViewModeListener += 1;
+        iViewModeListenersTemp[numIViewModeListener - 1] = listener;
+        
+        // Make member array point to this array.
+        iViewModeListeners = iViewModeListenersTemp;
+    }
+}
+
+//void WindowProjector::unregisterViewModeListener(IViewModeListener *listener) {
+//
+//}
+
+void WindowProjector::notifyViewModeListener() {
+    for (int i = 0; i < numIViewModeListener; i++)
+        iViewModeListeners[i]->onViewModeChanged(viewMode);
 }

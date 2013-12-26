@@ -89,6 +89,10 @@ void DataDisplayerParticles::display() {
     glEnd();
 }
 
+void DataDisplayerParticles::onKeyPressed(int key) {
+
+}
+
 void DataDisplayerParticles::setParticleFilter(ParticleFilter* particleFilterIn) {
     particleFilter = particleFilterIn;
 }

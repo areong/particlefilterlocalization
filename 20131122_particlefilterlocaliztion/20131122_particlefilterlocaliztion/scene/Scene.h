@@ -14,12 +14,18 @@ public:
     void setDistanceDefiningPointTouchesLine(double distance);
     
     int XYZtoIndexOfCube(double x, double y, double z);
+    int indexOfCubeToXComponent(int indexOfCube);
+    int indexOfCubeToYComponent(int indexOfCube);
+    int indexOfCubeToZComponent(int indexOfCube);
 
     int printDPointsXYZ();
     double *getRangeOfScene();
     double **getTableCubes();
     int *getNumPointsEachCube();
-    int *getNumCubes();
+    int getNumCubes();
+    int getXNumCubes();
+    int getYNumCubes();
+    int getZNumCubes();
 
 private:
     double *dPointsXYZ;
@@ -27,6 +33,7 @@ private:
     double dRangeOfScene[6]; // [xMax, xMin, yMax, yMin, zMax, zMin]
     double **tableCubes;
     double lengthCubeEdge;
+    int numCubes;
     int xNumCubes;
     int yNumCubes;
     int zNumCubes;
