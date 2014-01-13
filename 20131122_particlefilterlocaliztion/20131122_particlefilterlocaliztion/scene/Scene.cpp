@@ -215,6 +215,11 @@ void Scene::createTableCubes() {
     }
     for (int i = 0; i < numPoints * 3; i += 3) {
         int indexCube = XYZtoIndexOfCube(dPointsXYZ[i], dPointsXYZ[i+1], dPointsXYZ[i+2]);
+
+        // If unfortunately out of range, drop it out.
+        if (indexCube < 0)
+            continue;
+
         tableCubes[indexCube][currentIndexEachCube[indexCube] * 3    ] = dPointsXYZ[i    ];
         tableCubes[indexCube][currentIndexEachCube[indexCube] * 3 + 1] = dPointsXYZ[i + 1];
         tableCubes[indexCube][currentIndexEachCube[indexCube] * 3 + 2] = dPointsXYZ[i + 2];

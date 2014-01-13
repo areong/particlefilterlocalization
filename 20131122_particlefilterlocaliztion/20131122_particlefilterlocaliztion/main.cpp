@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
 
     // VectorRotator
     // Set offset 90 degrees, which makes no need to rotate model manually.
-    vectorRotator.setPhoneAngleZOffset(90);
+    vectorRotator.setPhoneAngleZOffset(0);
 
     // Camera
     camera.initialize();
